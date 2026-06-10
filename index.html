@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SIKAP — Demo Aplikasi</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --navy:#1a3a5c;--navy2:#0d2137;--blue:#2563eb;--blue2:#1d4ed8;
+  --green:#059669;--amber:#d97706;--red:#dc2626;--purple:#7c3aed;
+  --gray50:#f8fafc;--gray100:#f1f5f9;--gray200:#e2e8f0;
+  --gray400:#94a3b8;--gray600:#475569;--gray800:#1e293b;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg:0 10px 15px rgba(0,0,0,0.08),0 4px 6px rgba(0,0,0,0.05);
+  --radius:10px;--radius-lg:14px;
+  --font:'Plus Jakarta Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);font-size:14px;color:var(--gray800);background:var(--gray100);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+/* PAGE SYSTEM */
+.page{display:none;}
+.page.active{display:block;}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;background:#0d2137;overflow:hidden;position:relative;}
+.login-bg{position:fixed;inset:0;background:radial-gradient(circle at 20% 50%,rgba(37,99,235,0.15),transparent 50%),radial-gradient(circle at 80% 20%,rgba(8,145,178,0.1),transparent 40%),linear-gradient(180deg,#0d2137,#1a3a5c);z-index:0;}
+.login-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:50px 50px;z-index:0;}
+.login-left{flex:1;display:flex;flex-direction:column;justify-content:center;padding:4rem;position:relative;z-index:1;}
+.login-right{width:460px;background:white;display:flex;flex-direction:column;justify-content:center;padding:3rem;position:relative;z-index:1;}
+.brand-row{display:flex;align-items:center;gap:14px;margin-bottom:3.5rem;}
+.brand-icon{width:48px;height:48px;background:#2563eb;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;}
+.brand-name{font-size:1.5rem;font-weight:800;color:white;letter-spacing:2px;}
+.brand-sub{font-size:0.7rem;color:rgba(255,255,255,0.4);margin-top:1px;}
+.hero-h1{font-size:2.8rem;font-weight:800;color:white;line-height:1.15;margin-bottom:1.25rem;}
+.hero-h1 span{color:#60a5fa;}
+.hero-p{color:rgba(255,255,255,0.5);font-size:0.975rem;line-height:1.7;max-width:400px;margin-bottom:2.5rem;}
+.feat-list{display:flex;flex-direction:column;gap:12px;}
+.feat{display:flex;align-items:center;gap:12px;color:rgba(255,255,255,0.65);font-size:0.875rem;}
+.feat-dot{width:8px;height:8px;border-radius:50%;background:#2563eb;flex-shrink:0;}
+.lform-group{margin-bottom:1.25rem;}
+.lform-label{display:block;font-size:0.8rem;font-weight:600;color:#475569;margin-bottom:6px;}
+.input-wrap{position:relative;}
+.input-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:16px;}
+.lform-input{width:100%;padding:10px 12px 10px 38px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:inherit;font-size:0.9rem;color:#1e293b;background:#f8fafc;outline:none;transition:all 0.15s;}
+.lform-input:focus{border-color:#2563eb;background:white;box-shadow:0 0 0 3px rgba(37,99,235,0.08);}
+.lform-select{width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:inherit;font-size:0.9rem;color:#1e293b;background:#f8fafc;outline:none;cursor:pointer;}
+.sr-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.btn-login{width:100%;padding:12px;background:#2563eb;color:white;border:none;border-radius:10px;font-family:inherit;font-size:0.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s;margin-top:0.5rem;}
+.btn-login:hover{background:#1d4ed8;transform:translateY(-1px);}
+.demo-accounts{margin-top:2rem;padding-top:1.5rem;border-top:1px solid #f1f5f9;}
+.demo-accounts p{font-size:0.72rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.75rem;}
+.da-list{display:flex;flex-direction:column;gap:6px;}
+.da{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#f8fafc;border-radius:8px;cursor:pointer;transition:all 0.15s;border:1px solid transparent;}
+.da:hover{background:#dbeafe;border-color:#bfdbfe;}
+.da .an{font-size:0.825rem;font-weight:600;color:#1e293b;}
+.da .ar{font-size:0.72rem;color:#94a3b8;}
+.da .ab{font-size:0.7rem;font-weight:600;padding:2px 8px;border-radius:10px;}
+
+/* APP LAYOUT */
+.app-layout{display:flex;min-height:100vh;}
+.sidebar{width:240px;min-height:100vh;background:linear-gradient(180deg,var(--navy),var(--navy2));position:fixed;top:0;left:0;display:flex;flex-direction:column;z-index:100;transition:transform 0.3s;overflow-y:auto;}
+.sidebar-brand{padding:1.25rem 1.25rem 0.75rem;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:0.5rem;}
+.sidebar-logo{display:flex;align-items:center;gap:10px;}
+.sidebar-logo-icon{width:36px;height:36px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.sidebar-logo-text{color:white;font-weight:700;font-size:1.1rem;letter-spacing:0.5px;}
+.sidebar-logo-sub{color:rgba(255,255,255,0.45);font-size:0.68rem;margin-top:1px;}
+.sidebar-section{padding:0.75rem 1rem 0.2rem;font-size:0.65rem;font-weight:600;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:1.5px;}
+.sidebar-nav{flex:1;padding:0 0.5rem;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:0.55rem 0.75rem;border-radius:8px;color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.875rem;font-weight:500;margin-bottom:2px;transition:all 0.15s;cursor:pointer;border:none;background:none;width:100%;text-align:left;}
+.nav-item:hover{color:white;background:rgba(255,255,255,0.08);}
+.nav-item.active{color:white;background:var(--blue);}
+.nav-item i{width:18px;font-size:15px;}
+.sidebar-footer{padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,0.08);}
+.sidebar-user{display:flex;align-items:center;gap:10px;}
+.sidebar-avatar{width:34px;height:34px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;color:white;flex-shrink:0;}
+.su-name{color:white;font-size:0.825rem;font-weight:600;}
+.su-role{color:rgba(255,255,255,0.4);font-size:0.72rem;}
+.main{margin-left:240px;min-height:100vh;display:flex;flex-direction:column;flex:1;}
+.topbar{background:var(--navy);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:90;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.ta-badge{background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.85);padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:500;display:flex;align-items:center;gap:6px;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.topbar-user{color:rgba(255,255,255,0.7);font-size:0.825rem;display:flex;align-items:center;gap:8px;}
+.btn-logout{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.8);padding:5px 14px;border-radius:7px;font-size:0.8rem;cursor:pointer;font-family:var(--font);font-weight:500;display:inline-flex;align-items:center;gap:6px;}
+.btn-logout:hover{background:rgba(255,255,255,0.18);color:white;}
+.content{padding:1.5rem;flex:1;}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+.page-title{font-size:1.3rem;font-weight:700;}
+.page-sub{font-size:0.8rem;color:var(--gray400);margin-top:2px;}
+
+/* CARDS */
+.card{background:white;border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden;}
+.card-header{padding:1rem 1.25rem 0;display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:0.875rem;font-weight:600;display:flex;align-items:center;gap:8px;}
+.card-body{padding:1.25rem;}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+.g75{display:grid;grid-template-columns:7fr 5fr;gap:1rem;}
+.g48{display:grid;grid-template-columns:4fr 8fr;gap:1rem;}
+
+/* STAT CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+.stat-card{border-radius:var(--radius-lg);padding:1.25rem;color:white;position:relative;overflow:hidden;}
+.stat-card::after{content:'';position:absolute;right:-20px;bottom:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.08);}
+.stat-card .s-label{font-size:0.75rem;opacity:0.8;margin-bottom:0.5rem;}
+.stat-card .s-value{font-size:2rem;font-weight:700;line-height:1;}
+.stat-card .s-icon{position:absolute;right:1rem;top:1rem;font-size:1.5rem;opacity:0.3;}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:600;}
+.b-blue{background:#dbeafe;color:#1d4ed8;}
+.b-green{background:#d1fae5;color:#065f46;}
+.b-amber{background:#fef3c7;color:#92400e;}
+.b-red{background:#fee2e2;color:#991b1b;}
+.b-purple{background:#ede9fe;color:#5b21b6;}
+.b-gray{background:var(--gray100);color:var(--gray600);}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;font-size:0.825rem;font-weight:600;cursor:pointer;border:none;font-family:var(--font);transition:all 0.15s;text-decoration:none;}
+.btn-primary{background:var(--blue);color:white;}
+.btn-primary:hover{background:var(--blue2);}
+.btn-success{background:var(--green);color:white;}
+.btn-danger{background:var(--red);color:white;}
+.btn-outline{background:white;border:1px solid var(--gray200);color:var(--gray600);}
+.btn-outline:hover{background:var(--gray50);}
+.btn-sm{padding:4px 10px;font-size:0.775rem;border-radius:6px;}
+.btn-lg{padding:12px 24px;font-size:1rem;border-radius:10px;}
+.btn-wa{background:#25d366;color:white;}
+.w-full{width:100%;justify-content:center;}
+
+/* TABLES */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:0.85rem;}
+thead th{background:var(--gray50);padding:0.65rem 1rem;text-align:left;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--gray600);border-bottom:1px solid var(--gray200);white-space:nowrap;}
+tbody td{padding:0.75rem 1rem;border-bottom:1px solid var(--gray100);vertical-align:middle;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--gray50);}
+
+/* FORM */
+.form-group{margin-bottom:1rem;}
+.form-label{display:block;font-size:0.8rem;font-weight:600;color:var(--gray600);margin-bottom:0.4rem;}
+.form-control{width:100%;padding:8px 12px;border:1.5px solid var(--gray200);border-radius:8px;font-family:var(--font);font-size:0.875rem;color:var(--gray800);background:white;transition:border-color 0.15s;outline:none;}
+.form-control:focus{border-color:var(--blue);}
+select.form-control{cursor:pointer;}
+
+/* STEP INDICATOR */
+.step-wrap{display:flex;align-items:center;margin-bottom:1.5rem;}
+.step-item{text-align:center;}
+.step-circle{width:40px;height:40px;border-radius:50%;background:#e9ecef;color:#6c757d;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;margin:0 auto;transition:all 0.3s;}
+.step-circle.active{background:var(--blue);color:#fff;box-shadow:0 0 0 4px rgba(37,99,235,0.2);}
+.step-circle.done{background:var(--green);color:#fff;}
+.step-label{color:#6c757d;font-size:0.75rem;text-align:center;white-space:nowrap;margin-top:4px;}
+.step-label.active{color:var(--blue);font-weight:600;}
+.step-label.done{color:var(--green);}
+.step-line{flex:1;height:3px;background:#e9ecef;margin:0 8px;margin-bottom:20px;transition:background 0.3s;}
+.step-line.done{background:var(--green);}
+
+/* CARD TAP */
+.card-tap{border:2px solid var(--gray200);border-radius:var(--radius);padding:1rem;text-align:center;cursor:pointer;transition:all 0.2s;background:white;}
+.card-tap:hover,.card-tap.sel{border-color:var(--blue);background:#dbeafe;transform:translateY(-1px);}
+.card-tap .tap-label{font-weight:600;font-size:0.875rem;margin-top:4px;}
+.card-tap-jenis{text-align:left;padding:0.75rem 1rem;}
+.card-tap-jenis:hover,.card-tap-jenis.sel{border-color:var(--blue);background:#dbeafe;}
+
+/* LIST SISWA */
+.list-group{display:flex;flex-direction:column;}
+.list-group-item{padding:0.75rem 1rem;border-bottom:1px solid var(--gray100);cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.list-group-item:hover{background:var(--gray50);}
+.list-group-item:last-child{border-bottom:none;}
+
+/* PROGRESS */
+.progress{height:8px;background:var(--gray100);border-radius:4px;overflow:hidden;}
+.progress-bar{height:100%;border-radius:4px;}
+
+/* ALERT */
+.alert{padding:10px 14px;border-radius:var(--radius);font-size:0.825rem;display:flex;align-items:center;gap:8px;margin-bottom:1rem;}
+.alert-info{background:#dbeafe;color:#1e40af;}
+.alert-success{background:#d1fae5;color:#065f46;}
+.alert-warning{background:#fef3c7;color:#92400e;}
+
+/* FOTO DROPZONE */
+.foto-zone{border:2px dashed var(--gray200);border-radius:var(--radius);padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.2s;}
+.foto-zone:hover{border-color:var(--blue);background:#f0f9ff;}
+.foto-zone.has-foto{border-color:var(--green);background:#f0fff4;border-style:solid;}
+
+/* DETAIL PANEL */
+.detail-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:500;align-items:flex-start;justify-content:flex-end;padding:1rem;}
+.detail-overlay.show{display:flex;}
+.detail-panel{width:480px;max-height:calc(100vh - 2rem);overflow-y:auto;background:white;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:slideIn 0.25s ease;}
+@keyframes slideIn{from{transform:translateX(30px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.detail-header{padding:1.25rem 1.5rem;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:white;z-index:1;}
+
+/* JADWAL TABLE */
+.jadwal-input{width:100%;border:none;outline:none;padding:8px 10px;font-size:13px;background:transparent;transition:background 0.15s;min-width:80px;font-family:var(--font);}
+.jadwal-input:focus{background:#fffbea;box-shadow:inset 0 0 0 2px #ffc107;}
+.jadwal-row:hover .jadwal-input{background:#f8f9fa;}
+#tabelJadwal thead th{background:#1a3a5c!important;color:#ffffff!important;border-color:#2d5a8e!important;font-size:0.75rem;padding:10px;text-transform:uppercase;letter-spacing:0.5px;}
+#tabelJadwal td{padding:0;vertical-align:middle;}
+
+/* NOTIF */
+.notif-item{display:flex;gap:12px;padding:1rem 1.25rem;border-bottom:1px solid #f1f5f9;}
+.notif-item:last-child{border-bottom:none;}
+.notif-item.unread{background:#f8fafc;border-left:3px solid var(--blue);}
+.notif-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
+
+/* HAMBURGER BUTTON */
+.btn-hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;border-radius:8px;color:rgba(255,255,255,0.85);font-size:22px;line-height:1;margin-right:4px;}
+.btn-hamburger:hover{background:rgba(255,255,255,0.1);}
+
+/* SIDEBAR OVERLAY (mobile backdrop) */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;}
+.sidebar-overlay.show{display:block;}
+
+/* CLOSE SIDEBAR BUTTON (inside sidebar, mobile only) */
+.btn-sidebar-close{display:none;position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.1);border:none;color:white;border-radius:8px;padding:5px 9px;font-size:18px;cursor:pointer;line-height:1;}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);z-index:200;}
+  .sidebar.open{transform:translateX(0);}
+  .sidebar-brand{position:relative;padding-right:3rem;}
+  .btn-sidebar-close{display:block;}
+  .btn-hamburger{display:inline-flex;align-items:center;justify-content:center;}
+  .main{margin-left:0 !important;}
+  .topbar{padding:0.6rem 1rem;}
+  .content{padding:1rem;}
+  .stat-grid{grid-template-columns:1fr 1fr;}
+  .g2,.g3,.g4,.g75,.g48{grid-template-columns:1fr;}
+  .detail-panel{width:100%;max-width:100%;}
+  .detail-overlay{padding:0;align-items:flex-end;}
+  .detail-panel{border-radius:20px 20px 0 0;max-height:85vh;}
+  .demo-nav{bottom:0.75rem;right:0.75rem;left:0.75rem;justify-content:center;}
+
+  /* ── MOBILE LOGIN REDESIGN ── */
+  #p-login .login-bg{background:radial-gradient(ellipse at top,rgba(37,99,235,0.35),transparent 60%),linear-gradient(160deg,#0d2137 0%,#1a3a5c 60%,#0d2137 100%);}
+  #p-login .login-wrap{
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    min-height:100vh;
+    padding:0;
+    background:transparent;
+  }
+  #p-login .login-left{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    padding:3.5rem 1.5rem 2rem;
+    min-height:auto;
+    width:100%;
+  }
+  #p-login .brand-row{
+    margin-bottom:1.5rem;
+    flex-direction:column;
+    gap:10px;
+  }
+  #p-login .brand-icon{
+    width:60px;height:60px;
+    border-radius:18px;
+    font-size:28px;
+    box-shadow:0 8px 24px rgba(37,99,235,0.4);
+  }
+  #p-login .brand-name{font-size:1.8rem;letter-spacing:3px;}
+  #p-login .brand-sub{font-size:0.75rem;color:rgba(255,255,255,0.5);}
+  #p-login .hero-h1{
+    font-size:1.5rem;
+    color:white;
+    margin-bottom:0.5rem;
+    display:block;
+  }
+  #p-login .hero-h1 span{color:#93c5fd;}
+  #p-login .hero-p{
+    display:block;
+    font-size:0.82rem;
+    color:rgba(255,255,255,0.6);
+    line-height:1.6;
+    margin-bottom:1.25rem;
+    max-width:320px;
+  }
+  #p-login .feat-list{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px 10px;
+    max-width:340px;
+  }
+  #p-login .feat{
+    font-size:0.72rem;
+    color:rgba(255,255,255,0.7);
+    gap:6px;
+    line-height:1.4;
+  }
+  #p-login .feat-dot{
+    width:6px;height:6px;
+    flex-shrink:0;
+    margin-top:3px;
+  }
+  #p-login .login-right{
+    width:100%;
+    max-width:100%;
+    background:white;
+    border-radius:28px 28px 0 0;
+    padding:2rem 1.5rem 2.5rem;
+    box-shadow:0 -8px 40px rgba(0,0,0,0.25);
+    flex:1;
+    position:relative;
+  }
+  #p-login .login-right::before{
+    content:'';
+    display:block;
+    width:40px;height:4px;
+    background:#e2e8f0;
+    border-radius:2px;
+    margin:0 auto 1.5rem;
+  }
+  #p-login .sr-grid{grid-template-columns:1fr 1fr;}
+}
+
+/* DEMO NAV */
+.demo-nav{position:fixed;bottom:1.5rem;right:1.5rem;background:white;border-radius:50px;box-shadow:var(--shadow-lg);padding:6px 14px;display:flex;align-items:center;gap:5px;z-index:9999;border:1px solid var(--gray200);flex-wrap:wrap;max-width:calc(100vw - 3rem);}
+.demo-nav .dn-label{font-size:0.65rem;font-weight:700;color:var(--gray400);text-transform:uppercase;letter-spacing:1px;padding-right:4px;}
+.demo-nav button{font-size:0.72rem;font-weight:600;color:var(--blue);background:none;border:none;padding:3px 8px;border-radius:20px;cursor:pointer;font-family:var(--font);white-space:nowrap;}
+.demo-nav button:hover{background:#dbeafe;}
+.demo-nav button.cur{background:var(--blue);color:white;}
+.demo-nav .sep{color:var(--gray200);font-size:10px;}
+
+/* UTILS */
+.mb-4{margin-bottom:1.5rem;}.mb-3{margin-bottom:1rem;}.mb-2{margin-bottom:0.5rem;}
+.mt-2{margin-top:0.5rem;}.mt-3{margin-top:1rem;}
+.text-sm{font-size:0.8rem;}.text-xs{font-size:0.72rem;}.text-muted{color:var(--gray400);}
+.text-bold{font-weight:700;}.text-semibold{font-weight:600;}.text-center{text-align:center;}
+.fw-500{font-weight:500;}
+.flex{display:flex;}.items-center{align-items:center;}.items-start{align-items:flex-start;}
+.justify-between{justify-content:space-between;}.gap-2{gap:8px;}.gap-3{gap:12px;}
+.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;flex-shrink:0;}
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--gray400);}
+.empty-state i{font-size:2.5rem;opacity:0.3;display:block;margin-bottom:0.75rem;}
+.success-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;}
+.success-overlay.show{display:flex;}
+.success-box{background:white;border-radius:20px;padding:2.5rem;text-align:center;max-width:360px;width:90%;animation:popIn 0.3s ease;}
+@keyframes popIn{from{transform:scale(0.8);opacity:0;}to{transform:scale(1);opacity:1;}}
+.success-icon{width:72px;height:72px;border-radius:50%;background:#d1fae5;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#059669;margin:0 auto 1rem;}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: LOGIN -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="p-login" class="page active">
+<div class="login-bg"></div><div class="login-grid"></div>
+<div class="login-wrap">
+  <div class="login-left">
+    <div class="brand-row">
+      <div class="brand-icon"><i class="bi bi-shield-check"></i></div>
+      <div><div class="brand-name">SIKAP</div><div class="brand-sub">Sistem Informasi Pelanggaran Siswa</div></div>
+    </div>
+    <h1 class="hero-h1">Kelola Pelanggaran<br><span>Siswa dengan Mudah</span></h1>
+    <p class="hero-p">Platform digital untuk pencatatan, monitoring, dan rekapitulasi pelanggaran siswa yang efisien, aman, dan mudah digunakan semua kalangan guru.</p>
+    <div class="feat-list">
+      <div class="feat"><div class="feat-dot"></div>Input pelanggaran 3 tap — selesai 15 detik</div>
+      <div class="feat"><div class="feat-dot"></div>Rekap otomatis per siswa, kelas, dan semester</div>
+      <div class="feat"><div class="feat-dot"></div>Cetak 4 jenis surat resmi langsung dari sistem</div>
+      <div class="feat"><div class="feat-dot"></div>Push notification ke orang tua saat pelanggaran</div>
+      <div class="feat"><div class="feat-dot"></div>Jurnal siswa — catat perkembangan & momen positif</div>
+      <div class="feat"><div class="feat-dot"></div>Jadwal mingguan guru terintegrasi di dashboard</div>
+      <div class="feat"><div class="feat-dot"></div>Bisa diinstall di HP (PWA) — akses cepat</div>
+    </div>
+  </div>
+  <div class="login-right">
+    <h2 style="font-size:1.5rem;font-weight:700;color:#1e293b;margin-bottom:6px">Selamat Datang 👋</h2>
+    <p style="color:#94a3b8;font-size:0.875rem;margin-bottom:1.5rem">Masuk ke akun Anda untuk melanjutkan</p>
+    <div class="lform-group"><label class="lform-label">Username (NIP / NIK)</label><div class="input-wrap"><i class="bi bi-person input-icon"></i><input type="text" class="lform-input" value="000000001"></div></div>
+    <div class="lform-group"><label class="lform-label">Password</label><div class="input-wrap"><i class="bi bi-lock input-icon"></i><input type="password" class="lform-input" value="Admin1234"></div></div>
+    <div class="sr-grid">
+      <div class="lform-group"><label class="lform-label">Tahun Pelajaran</label><select class="lform-select"><option>2024/2025 ★</option></select></div>
+      <div class="lform-group"><label class="lform-label">Semester</label><select class="lform-select"><option>Semester 2 (Genap)</option></select></div>
+    </div>
+    <button class="btn-login" onclick="goTo('p-admin')"><i class="bi bi-box-arrow-in-right"></i>Masuk ke SIKAP</button>
+    <div class="demo-accounts">
+      <p>Demo Akun — Klik untuk masuk</p>
+      <div class="da-list">
+        <div class="da" onclick="goTo('p-admin')"><div><div class="an">Administrator</div><div class="ar">000000001 · Admin1234</div></div><span class="ab" style="background:#dbeafe;color:#1d4ed8">Admin</span></div>
+        <div class="da" onclick="goTo('p-guru')"><div><div class="an">Ahmad Fauzi, S.Pd.</div><div class="ar">197501012005011001 · Guru1234</div></div><span class="ab" style="background:#d1fae5;color:#065f46">Guru</span></div>
+        <div class="da" onclick="goTo('p-bk')"><div><div class="an">Siti Rahayu, S.Psi.</div><div class="ar">198203152008012001 · BK1234</div></div><span class="ab" style="background:#fef3c7;color:#92400e">Guru BK</span></div>
+        <div class="da" onclick="goTo('p-ortu')"><div><div class="an">Bapak Fauzan (Ortu)</div><div class="ar">081234567890 · Ortu1234</div></div><span class="ab" style="background:#ede9fe;color:#5b21b6">Orang Tua</span></div>
+      </div>
+    </div>
+    <div style="margin-top:1.25rem;padding:10px 12px;background:#f0fdf4;border-radius:8px;font-size:0.775rem;color:#065f46;display:flex;align-items:center;gap:6px;">
+      <i class="bi bi-shield-lock"></i>Guru & orang tua tidak pernah ter-logout otomatis
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: DASHBOARD ADMIN -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="p-admin" class="page">
+<div class="app-layout">
+<div class="sidebar">
+  <div class="sidebar-brand"><div class="sidebar-logo"><div class="sidebar-logo-icon"><i class="bi bi-shield-check" style="color:white"></i></div><div><div class="sidebar-logo-text">SIKAP</div><div class="sidebar-logo-sub">Panel Admin</div></div></div></div>
+  <div class="sidebar-nav">
+    <button class="nav-item active" onclick="goTo('p-admin')"><i class="bi bi-speedometer2"></i>Dashboard</button>
+    <div class="sidebar-section">Data Master</div>
+    <button class="nav-item" onclick=""><i class="bi bi-people"></i>Siswa</button>
+    <button class="nav-item" onclick=""><i class="bi bi-person-badge"></i>Guru & User</button>
+    <button class="nav-item" onclick=""><i class="bi bi-people-fill"></i>Akun Orang Tua</button>
+    <button class="nav-item" onclick=""><i class="bi bi-exclamation-triangle"></i>Jenis Pelanggaran</button>
+    <button class="nav-item" onclick=""><i class="bi bi-shield-exclamation"></i>Sanksi</button>
+    <button class="nav-item" onclick=""><i class="bi bi-gear"></i>Pengaturan</button>
+    <div class="sidebar-section">Sistem</div>
+    <button class="nav-item" onclick="goTo('p-backup')"><i class="bi bi-database-down"></i>Backup Database</button>
+  </div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar">AD</div><div><div class="su-name">Administrator</div><div class="su-role">Admin Sistem</div></div></div></div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left"><div class="ta-badge"><i class="bi bi-calendar3" style="font-size:12px"></i>2024/2025 — Semester Genap</div></div>
+    <div class="topbar-right"><div class="topbar-user"><i class="bi bi-person-circle"></i>Administrator<span class="badge b-gray" style="font-size:0.68rem">Admin</span></div><button class="btn-logout" onclick="goTo('p-login')"><i class="bi bi-box-arrow-right"></i>Logout</button></div>
+  </div>
+  <div class="content">
+    <div class="page-header"><div><div class="page-title">Dashboard Admin</div><div class="page-sub">Selamat datang, Administrator</div></div><button class="btn btn-outline btn-sm"><i class="bi bi-key"></i>Ganti Password</button></div>
+    <div class="stat-grid">
+      <div class="stat-card" style="background:linear-gradient(135deg,#1a3a5c,#2563eb)"><div class="s-label">Total Siswa Aktif</div><div class="s-value">428</div><div class="s-icon"><i class="bi bi-people"></i></div></div>
+      <div class="stat-card" style="background:linear-gradient(135deg,#065f46,#059669)"><div class="s-label">Guru & Staff</div><div class="s-value">32</div><div class="s-icon"><i class="bi bi-person-badge"></i></div></div>
+      <div class="stat-card" style="background:linear-gradient(135deg,#92400e,#d97706)"><div class="s-label">Pelanggaran Semester</div><div class="s-value">147</div><div class="s-icon"><i class="bi bi-exclamation-triangle"></i></div></div>
+      <div class="stat-card" style="background:linear-gradient(135deg,#5b21b6,#7c3aed)"><div class="s-label">Akun Orang Tua</div><div class="s-value">89</div><div class="s-icon"><i class="bi bi-people-fill"></i></div></div>
+    </div>
+    <div class="g75 mb-4">
+      <div class="card">
+        <div class="card-header" style="padding-bottom:0.75rem"><div class="card-title"><i class="bi bi-clock-history" style="color:#2563eb"></i>Pelanggaran Terbaru</div><span class="badge b-blue">Semester ini</span></div>
+        <div style="padding:0"><table><thead><tr><th>Siswa / Kelas</th><th>Pelanggaran</th><th>Poin</th><th>Tanggal</th></tr></thead><tbody>
+          <tr><td><div class="text-semibold">Muhammad Rafi</div><div class="text-xs text-muted">IX-A</div></td><td><span class="badge b-red">Bolos Sekolah</span></td><td><strong>25</strong></td><td class="text-sm text-muted">16 Mar 2026</td></tr>
+          <tr><td><div class="text-semibold">Siti Nurhaliza</div><div class="text-xs text-muted">VII-B</div></td><td><span class="badge b-amber">Membawa HP</span></td><td><strong>15</strong></td><td class="text-sm text-muted">15 Mar 2026</td></tr>
+          <tr><td><div class="text-semibold">Budi Santoso</div><div class="text-xs text-muted">VIII-A</div></td><td><span class="badge b-green">Terlambat</span></td><td><strong>5</strong></td><td class="text-sm text-muted">15 Mar 2026</td></tr>
+          <tr><td><div class="text-semibold">Dewi Rahayu</div><div class="text-xs text-muted">IX-B</div></td><td><span class="badge b-red">Berkelahi</span></td><td><strong>50</strong></td><td class="text-sm text-muted">14 Mar 2026</td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="card">
+        <div class="card-header" style="padding-bottom:0.75rem"><div class="card-title"><i class="bi bi-trophy" style="color:#d97706"></i>Poin Tertinggi</div></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+          <div class="flex items-center gap-3"><div class="avatar" style="background:#ef4444;color:white;font-size:0.75rem">1</div><div style="flex:1"><div class="text-semibold" style="font-size:0.85rem">Dewi Rahayu</div><div class="text-xs text-muted">IX-B</div></div><span class="badge b-red" style="font-size:0.8rem;font-weight:700">85</span></div>
+          <div class="flex items-center gap-3"><div class="avatar" style="background:#f97316;color:white;font-size:0.75rem">2</div><div style="flex:1"><div class="text-semibold" style="font-size:0.85rem">Muhammad Rafi</div><div class="text-xs text-muted">IX-A</div></div><span class="badge b-red" style="font-size:0.8rem;font-weight:700">65</span></div>
+          <div class="flex items-center gap-3"><div class="avatar" style="background:#eab308;color:white;font-size:0.75rem">3</div><div style="flex:1"><div class="text-semibold" style="font-size:0.85rem">Rizki Ramadhan</div><div class="text-xs text-muted">VIII-B</div></div><span class="badge b-amber" style="font-size:0.8rem;font-weight:700">45</span></div>
+          <div class="flex items-center gap-3"><div class="avatar" style="background:#22c55e;color:white;font-size:0.75rem">4</div><div style="flex:1"><div class="text-semibold" style="font-size:0.85rem">Siti Nurhaliza</div><div class="text-xs text-muted">VII-B</div></div><span class="badge b-amber" style="font-size:0.8rem;font-weight:700">35</span></div>
+          <div class="flex items-center gap-3"><div class="avatar" style="background:#3b82f6;color:white;font-size:0.75rem">5</div><div style="flex:1"><div class="text-semibold" style="font-size:0.85rem">Budi Santoso</div><div class="text-xs text-muted">VIII-A</div></div><span class="badge b-green" style="font-size:0.8rem;font-weight:700">20</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card mb-4">
+      <div class="card-header" style="padding-bottom:0.75rem"><div class="card-title"><i class="bi bi-shield-exclamation" style="color:#d97706"></i>Distribusi Sanksi</div></div>
+      <div class="card-body"><div class="g4">
+        <div style="text-align:center;padding:12px;border-radius:10px;border:2px solid #d1fae5"><div style="font-size:1.75rem;font-weight:700;color:#059669">38</div><div style="font-size:0.75rem;font-weight:600;color:#059669">Peringatan Lisan</div><div style="font-size:0.68rem;color:#94a3b8">1–25 poin</div></div>
+        <div style="text-align:center;padding:12px;border-radius:10px;border:2px solid #fef3c7"><div style="font-size:1.75rem;font-weight:700;color:#d97706">15</div><div style="font-size:0.75rem;font-weight:600;color:#d97706">Peringatan Tertulis</div><div style="font-size:0.68rem;color:#94a3b8">26–50 poin</div></div>
+        <div style="text-align:center;padding:12px;border-radius:10px;border:2px solid #fee2e2"><div style="font-size:1.75rem;font-weight:700;color:#dc2626">5</div><div style="font-size:0.75rem;font-weight:600;color:#dc2626">SP 2 + Pernyataan</div><div style="font-size:0.68rem;color:#94a3b8">51–75 poin</div></div>
+        <div style="text-align:center;padding:12px;border-radius:10px;border:2px solid #e2e8f0"><div style="font-size:1.75rem;font-weight:700;color:#1e293b">2</div><div style="font-size:0.75rem;font-weight:600;color:#1e293b">Skorsing</div><div style="font-size:0.68rem;color:#94a3b8">76+ poin</div></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: DASHBOARD GURU -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="p-guru" class="page">
+<div class="app-layout">
+<div class="sidebar">
+  <div class="sidebar-brand"><div class="sidebar-logo"><div class="sidebar-logo-icon"><i class="bi bi-shield-check" style="color:white"></i></div><div><div class="sidebar-logo-text">SIKAP</div><div class="sidebar-logo-sub">Panel Guru</div></div></div></div>
+  <div class="sidebar-nav">
+    <button class="nav-item active" onclick="goTo('p-guru')"><i class="bi bi-house"></i>Beranda</button>
+    <button class="nav-item" onclick="goTo('p-catat')"><i class="bi bi-plus-circle"></i>Catat Pelanggaran</button>
+    <button class="nav-item" onclick="goTo('p-riwayat')"><i class="bi bi-clock-history"></i>Riwayat Saya</button>
+    <button class="nav-item" onclick="goTo('p-jurnal')"><i class="bi bi-journal-text"></i>Catat Jurnal</button>
+    <button class="nav-item" onclick=""><i class="bi bi-journal-bookmark"></i>Riwayat Jurnal</button>
+    <button class="nav-item" onclick="goTo('p-jadwal')"><i class="bi bi-calendar-week"></i>Jadwal Saya</button>
+  </div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" style="background:#059669">AF</div><div><div class="su-name">Ahmad Fauzi, S.Pd.</div><div class="su-role">Guru Matematika</div></div></div></div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left"><div class="ta-badge"><i class="bi bi-calendar3" style="font-size:12px"></i>2024/2025 — Semester Genap</div></div>
+    <div class="topbar-right"><div class="topbar-user"><i class="bi bi-person-circle"></i>Ahmad Fauzi<span class="badge b-green" style="font-size:0.68rem">Guru</span></div><button class="btn-logout" onclick="goTo('p-login')"><i class="bi bi-box-arrow-right"></i>Logout</button></div>
+  </div>
+  <div class="content">
+    <div class="page-header"><div><div class="page-title">Selamat Datang 👋</div><div class="page-sub">Ahmad Fauzi, S.Pd. — Senin, 16 Maret 2026</div></div></div>
+    <div style="text-align:center;padding:1.5rem 0 1.25rem">
+      <button class="btn btn-primary btn-lg" onclick="goTo('p-catat')" style="font-size:1.15rem;box-shadow:0 4px 15px rgba(37,99,235,0.3)"><i class="bi bi-plus-circle-fill"></i>Catat Pelanggaran</button>
+      <div class="text-muted text-sm" style="margin-top:8px"><i class="bi bi-info-circle" style="margin-right:4px"></i>3 langkah — pilih kelas, siswa, dan jenis pelanggaran</div>
+    </div>
+    <div class="g2 mb-4">
+      <div class="card" style="text-align:center;padding:1.5rem"><div style="font-size:2.5rem;font-weight:700;color:#2563eb">3</div><div class="text-sm text-muted" style="margin-top:4px"><i class="bi bi-calendar-day" style="margin-right:4px"></i>Catatan Hari Ini</div></div>
+      <div class="card" style="text-align:center;padding:1.5rem"><div style="font-size:2.5rem;font-weight:700;color:#059669">28</div><div class="text-sm text-muted" style="margin-top:4px"><i class="bi bi-collection" style="margin-right:4px"></i>Total Semester Ini</div></div>
+    </div>
+    <div class="g2 mb-4">
+      <div class="card">
+        <div class="card-header" style="padding-bottom:0.75rem"><div class="card-title"><i class="bi bi-calendar-day" style="color:#2563eb"></i>Hari Ini — <span style="color:#2563eb">Senin, 16 Mar 2026</span></div><button class="btn btn-outline btn-sm" onclick="goTo('p-jadwal')"><i class="bi bi-pencil"></i>Edit Jadwal</button></div>
+        <div class="card-body" style="padding-top:0.75rem;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid #f1f5f9"><div style="width:70px;text-align:center;flex-shrink:0"><div style="font-weight:700;color:#2563eb;font-size:0.95rem">07.00</div></div><div style="border-left:2px solid #e2e8f0;padding-left:12px"><div style="font-weight:600;font-size:0.85rem">MTK — VII-A</div></div></div>
+          <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid #f1f5f9"><div style="width:70px;text-align:center;flex-shrink:0"><div style="font-weight:700;color:#2563eb;font-size:0.95rem">08.20</div></div><div style="border-left:2px solid #e2e8f0;padding-left:12px"><div style="font-weight:600;font-size:0.85rem">MTK — VII-B</div></div></div>
+          <div style="display:flex;align-items:center;gap:12px"><div style="width:70px;text-align:center;flex-shrink:0"><div style="font-weight:700;color:#2563eb;font-size:0.95rem">10.00</div></div><div style="border-left:2px solid #e2e8f0;padding-left:12px"><div style="font-weight:600;font-size:0.85rem">MTK — VIII-A</div></div></div>
+          <div class="text-muted text-xs"><i class="bi bi-info-circle" style="margin-right:4px"></i>3 sesi hari ini</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" style="padding-bottom:0.75rem"><div class="card-title"><i class="bi bi-calendar-plus" style="color:#94a3b8"></i>Besok — <span style="color:#94a3b8">Selasa, 17 Mar 2026</span></div></div>
+        <div class="card-body" style="padding-top:0.75rem;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid #f1f5f9"><div style="width:70px;text-align:center;flex-shrink:0"><div style="font-weight:700;color:#94a3b8;font-size:0.95rem">07.00</div></div><div style="border-left:2px solid #e2e8f0;padding-left:12px"><div style="font-weight:600;font-size:0.85rem">MTK — IX-A</div></div></div>
+          <div style="display:flex;align-items:center;gap:12px"><div style="width:70px;text-align:center;flex-shrink:0"><div style="font-weight:700;color:#94a3b8;font-size:0.95rem">09.40</div></div><div style="border-left:2px solid #e2e8f0;padding-left:12px"><div style="font-weight:600;font-size:0.85rem">MTK — IX-B</div></div></div>
+          <div class="text-muted text-xs"><i class="bi bi-info-circle" style="margin-right:4px"></i>2 sesi besok</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header" style="padding-bottom:0.75rem"><div class="card-title"><i class="bi bi-clock-history" style="color:#2563eb"></i>5 Catatan Terakhir</div><button class="btn btn-outline btn-sm" onclick="goTo('p-riwayat')">Lihat Semua</button></div>
+      <div><table><thead><tr><th>Siswa / Kelas</th><th>Pelanggaran</th><th>Poin</th><th>Tanggal</th></tr></thead><tbody>
+        <tr><td><div class="text-semibold">Muhammad Rafi</div><div class="text-xs text-muted">IX-A</div></td><td><span class="badge b-red">Bolos Sekolah</span></td><td><strong>25</strong></td><td class="text-sm text-muted">16 Mar 2026</td></tr>
+        <tr><td><div class="text-semibold">Budi Santoso</div><div class="text-xs text-muted">VIII-A</div></td><td><span class="badge b-green">Terlambat</span></td><td><strong>5</strong></td><td class="text-sm text-muted">16 Mar 2026</td></tr>
+        <tr><td><div class="text-semibold">Siti Aminah</div><div class="text-xs text-muted">VII-A</div></td><td><span class="badge b-amber">Tidak Berseragam</span></td><td><strong>10</strong></td><td class="text-sm text-muted">15 Mar 2026</td></tr>
+        <tr><td><div class="text-semibold">Rizki Ramadhan</div><div class="text-xs text-muted">VIII-B</div></td><td><span class="badge b-amber">Membawa HP</span></td><td><strong>15</strong></td><td class="text-sm text-muted">14 Mar 2026</td></tr>
+        <tr><td><div class="text-semibold">Dewi Lestari</div><div class="text-xs text-muted">VII-B</div></td><td><span class="badge b-green">Terlambat</span></td><td><strong>5</strong></td><td class="text-sm text-muted">13 Mar 2026</td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: CATAT PELANGGARAN (3 TAP) -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="p-catat" class="page">
+<div class="app-layout">
+<div class="sidebar">
+  <div class="sidebar-brand"><div class="sidebar-logo"><div class="sidebar-logo-icon"><i class="bi bi-shield-check" style="color:white"></i></div><div><div class="sidebar-logo-text">SIKAP</div><div class="sidebar-logo-sub">Panel Guru</div></div></div></div>
+  <div class="sidebar-nav">
+    <button class="nav-item" onclick="goTo('p-guru')"><i class="bi bi-house"></i>Beranda</button>
+    <button class="nav-item active" onclick="goTo('p-catat')"><i class="bi bi-plus-circle"></i>Catat Pelanggaran</button>
+    <button class="nav-item" onclick="goTo('p-riwayat')"><i class="bi bi-clock-history"></i>Riwayat Saya</button>
+    <button class="nav-item" onclick="goTo('p-jurnal')"><i class="bi bi-journal-text"></i>Catat Jurnal</button>
+    <button class="nav-item" onclick="goTo('p-jadwal')"><i class="bi bi-calendar-week"></i>Jadwal Saya</button>
+  </div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" style="background:#059669">AF</div><div><div class="su-name">Ahmad Fauzi, S.Pd.</div><div class="su-role">Guru Matematika</div></div></div></div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left"><div class="ta-badge"><i class="bi bi-calendar3" style="font-size:12px"></i>2024/2025 — Semester Genap</div></div>
+    <div class="topbar-right"><button class="btn-logout" onclick="goTo('p-login')"><i class="bi bi-box-arrow-right"></i>Logout</button></div>
+  </div>
+  <div class="content">
+    <div class="page-header">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="btn btn-outline btn-sm" onclick="goTo('p-guru')"><i class="bi bi-arrow-left"></i></button>
+        <div><div class="page-title">Catat Pelanggaran</div><div class="page-sub">Senin, 16 Maret 2026 — 2024/2025 Semester Genap</div></div>
+      </div>
+    </div>
+    <div style="max-width:580px;margin:0 auto">
+      <!-- Step Indicator -->
+      <div class="step-wrap" id="catat-steps">
+        <div class="step-item"><div class="step-circle active" id="cs1">1</div><div class="step-label active" id="cl1">Pilih Kelas</div></div>
+        <div class="step-line" id="cln1"></div>
+        <div class="step-item"><div class="step-circle" id="cs2">2</div><div class="step-label" id="cl2">Pilih Siswa</div></div>
+        <div class="step-line" id="cln2"></div>
+        <div class="step-item"><div class="step-circle" id="cs3">3</div><div class="step-label" id="cl3">Pilih Pelanggaran</div></div>
+      </div>
+
+      <!-- Step 1 -->
+      <div id="cs-step1" class="card">
+        <div class="card-body">
+          <h5 style="font-weight:700;margin-bottom:4px"><span class="badge b-blue" style="margin-right:8px">1</span>Pilih Kelas</h5>
+          <p class="text-muted text-sm" style="margin-bottom:1.25rem">Pilih kelas siswa yang melanggar</p>
+          <div class="g3">
+            <div class="card-tap" onclick="catPilihKelas('VII-A')"><i class="bi bi-door-open" style="font-size:1.5rem;color:#2563eb;display:block;margin-bottom:4px"></i><div class="tap-label">VII-A</div></div>
+            <div class="card-tap" onclick="catPilihKelas('VII-B')"><i class="bi bi-door-open" style="font-size:1.5rem;color:#2563eb;display:block;margin-bottom:4px"></i><div class="tap-label">VII-B</div></div>
+            <div class="card-tap" onclick="catPilihKelas('VIII-A')"><i class="bi bi-door-open" style="font-size:1.5rem;color:#2563eb;display:block;margin-bottom:4px"></i><div class="tap-label">VIII-A</div></div>
+            <div class="card-tap" onclick="catPilihKelas('VIII-B')"><i class="bi bi-door-open" style="font-size:1.5rem;color:#2563eb;display:block;margin-bottom:4px"></i><div class="tap-label">VIII-B</div></div>
+            <div class="card-tap" onclick="catPilihKelas('IX-A')"><i class="bi bi-door-open" style="font-size:1.5rem;color:#2563eb;display:block;margin-bottom:4px"></i><div class="tap-label">IX-A</div></div>
+            <div class="card-tap" onclick="catPilihKelas('IX-B')"><i class="bi bi-door-open" style="font-size:1.5rem;color:#2563eb;display:block;margin-bottom:4px"></i><div class="tap-label">IX-B</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div id="cs-step2" class="card" style="display:none">
+        <div class="card-body">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+            <h5 style="font-weight:700"><span class="badge b-blue" style="margin-right:8px">2</span>Pilih Siswa</h5>
+            <button class="btn btn-outline btn-sm" onclick="catGoStep(1)"><i class="bi bi-arrow-left"></i>Ganti Kelas</button>
+          </div>
+          <p class="text-muted text-sm" style="margin-bottom:1rem">Kelas: <strong id="cat-kelas-label">—</strong></p>
+          <div style="position:relative;margin-bottom:10px">
+            <i class="bi bi-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8"></i>
+            <input type="text" class="form-control" style="padding-left:34px" placeholder="Ketik nama siswa..." oninput="catFilterSiswa(this.value)">
+          </div>
+          <div class="list-group" id="cat-siswa-list"></div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div id="cs-step3" class="card" style="display:none">
+        <div class="card-body">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+            <h5 style="font-weight:700"><span class="badge b-blue" style="margin-right:8px">3</span>Pilih Pelanggaran</h5>
+            <button class="btn btn-outline btn-sm" onclick="catGoStep(2)"><i class="bi bi-arrow-left"></i>Ganti Siswa</button>
+          </div>
+          <p class="text-muted text-sm" style="margin-bottom:1rem">Siswa: <strong id="cat-siswa-label">—</strong></p>
+          <div style="position:relative;margin-bottom:1rem">
+            <i class="bi bi-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8"></i>
+            <input type="text" class="form-control" style="padding-left:34px" placeholder="Ketik nama pelanggaran..." oninput="catFilterJenis(this.value)" id="cat-search-jenis">
+          </div>
+          <div style="margin-bottom:1rem">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.5rem"><span class="badge b-green">Ringan</span><hr style="flex:1;border:none;border-top:1px solid #e2e8f0"></div>
+            <div style="display:flex;flex-direction:column;gap:6px" class="jenis-grup">
+              <div class="card-tap card-tap-jenis jenis-item" onclick="catPilihJenis('Terlambat masuk sekolah','P001',5)"><div style="display:flex;justify-content:space-between;align-items:center"><div><div class="fw-500 text-sm">Terlambat masuk sekolah</div><div class="text-xs text-muted">P001</div></div><span class="badge b-green" style="font-size:0.9rem;font-weight:700">5</span></div></div>
+              <div class="card-tap card-tap-jenis jenis-item" onclick="catPilihJenis('Tidak berseragam lengkap','P002',10)"><div style="display:flex;justify-content:space-between;align-items:center"><div><div class="fw-500 text-sm">Tidak berseragam lengkap</div><div class="text-xs text-muted">P002</div></div><span class="badge b-green" style="font-size:0.9rem;font-weight:700">10</span></div></div>
+              <div class="card-tap card-tap-jenis jenis-item" onclick="catPilihJenis('Tidak mengerjakan PR','P004',5)"><div style="display:flex;justify-content:space-between;align-items:center"><div><div class="fw-500 text-sm">Tidak mengerjakan PR</div><div class="text-xs text-muted">P004</div></div><span class="badge b-green" style="font-size:0.9rem;font-weight:700">5</span></div></div>
+            </div>
+          </div>
+          <div style="margin-bottom:1rem">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.5rem"><span class="badge b-amber">Sedang</span><hr style="flex:1;border:none;border-top:1px solid #e2e8f0"></div>
+            <div style="display:flex;flex-direction:column;gap:6px" class="jenis-grup">
+              <div class="card-tap card-tap-jenis jenis-item" onclick="catPilihJenis('Membawa HP/gadget','P003',15)"><div style="display:flex;justify-content:space-between;align-items:center"><div><div class="fw-500 text-sm">Membawa HP/gadget</div><div class="text-xs text-muted">P003</div></div><span class="badge b-amber" style="font-size:0.9rem;font-weight:700">15</span></div></div>
+              <div class="card-tap card-tap-jenis jenis-item" onclick="catPilihJenis('Bolos pelajaran','P005',20)"><div style="display:flex;justify-content:space-between;align-items:center"><div><div class="fw-500 text-sm">Bolos pelajaran</div><div class="text-xs text-muted">P005</div></div><span class="badge b-amber" style="font-size:0.9rem;font-weight:700">20</span></div></div>
+              <div class="card-tap card-tap-jenis jenis-item" onclick="catPilihJenis('Bolos sekolah','P006',25)"><div style="display:flex;justify-content:space-between;align-items:center"><div><div class="fw-500 text-sm">Bolos sekolah</div><div class="text-xs text-muted">P006</div></div><span class="badge b-amber" style="font-size:0.9rem;font-weight:700">25</span></div></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.5rem"><span class="badge b-red">Berat</span><hr style="flex:1;border:none;border-top:1px solid #e2e8f0"></div>
+            <div style="display:flex;flex-direction:column;gap:6px" class="jenis-grup">
+              <div class="card-tap card-tap-jenis jenis-item" onclick="catPilihJenis('Berkelahi','P007',50)"><div style="display:flex;justify-content:space-between;align-items:center"><div><div class="fw-500 text-sm">Berkelahi</div><div class="text-xs text-muted">P007</div></div><span class="badge b-red" style="font-size:0.9rem;font-weight:700">50</span></div></div>
+              <div class="card-tap card-tap-jenis jenis-item" onclick="catPilihJenis('Merusak fasilitas sekolah','P008',40)"><div style="display:flex;justify-content:space-between;align-items:center"><div><div class="fw-500 text-sm">Merusak fasilitas</div><div class="text-xs text-muted">P008</div></div><span class="badge b-red" style="font-size:0.9rem;font-weight:700">40</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Konfirmasi + Foto -->
+      <div id="cs-step4" class="card" style="display:none;border:2px solid #059669">
+        <div class="card-body">
+          <h5 style="font-weight:700;color:#059669;margin-bottom:1.25rem"><i class="bi bi-check-circle me-2"></i>Konfirmasi Catatan</h5>
+          <div style="background:#f8fafc;border-radius:10px;padding:1rem;margin-bottom:1.25rem">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div><div class="text-xs text-muted">Tanggal</div><div class="text-semibold">Senin, 16 Maret 2026</div></div>
+              <div><div class="text-xs text-muted">Kelas</div><div class="text-semibold" id="konf-kelas">—</div></div>
+              <div><div class="text-xs text-muted">Siswa</div><div class="text-semibold" id="konf-siswa">—</div></div>
+              <div><div class="text-xs text-muted">Poin</div><div style="font-size:1.5rem;font-weight:800;color:#dc2626" id="konf-poin">—</div></div>
+              <div style="grid-column:1/-1"><div class="text-xs text-muted">Pelanggaran</div><div class="text-semibold" id="konf-jenis">—</div></div>
+            </div>
+          </div>
+          <!-- Foto Bukti -->
+          <div style="margin-bottom:1.25rem">
+            <div style="font-size:0.8rem;font-weight:600;color:#475569;margin-bottom:8px">Foto Bukti <span style="color:#94a3b8;font-weight:400">(opsional)</span></div>
+            <div style="display:flex;gap:8px;margin-bottom:8px">
+              <button class="btn btn-outline btn-sm" style="flex:1"><i class="bi bi-camera me-1"></i>Ambil Foto</button>
+              <button class="btn btn-outline btn-sm" style="flex:1"><i class="bi bi-images me-1"></i>Dari Galeri</button>
+            </div>
+            <div class="foto-zone" id="konf-foto-zone">
+              <i class="bi bi-camera" style="font-size:1.75rem;color:#94a3b8;display:block;margin-bottom:6px"></i>
+              <div class="text-sm text-muted">Tap untuk ambil foto atau pilih dari galeri</div>
+              <div class="text-xs text-muted mt-2">Dikompres otomatis sebelum upload</div>
+            </div>
+          </div>
+          <div style="display:grid;gap:8px">
+            <button class="btn btn-success w-full" style="font-size:1rem;padding:12px" onclick="catSimpan()"><i class="bi bi-check-circle-fill"></i>SIMPAN PELANGGARAN</button>
+            <button class="btn btn-outline w-full" onclick="catGoStep(3)"><i class="bi bi-arrow-left"></i>Ganti Pelanggaran</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Success overlay -->
+<div class="success-overlay" id="catat-success">
+  <div class="success-box">
+    <div class="success-icon"><i class="bi bi-check-lg"></i></div>
+    <h3 style="font-size:1.25rem;font-weight:700;color:#1e293b;margin-bottom:8px">Berhasil Disimpan! ✓</h3>
+    <p class="text-muted text-sm" id="cat-success-msg" style="margin-bottom:1.5rem">Pelanggaran berhasil dicatat.</p>
+    <div style="display:grid;gap:8px">
+      <button class="btn btn-primary w-full" onclick="catLagi()"><i class="bi bi-plus-circle"></i>Catat Lagi</button>
+      <button class="btn btn-outline w-full" onclick="goTo('p-guru')"><i class="bi bi-house"></i>Kembali ke Beranda</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: RIWAYAT PELANGGARAN -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="p-riwayat" class="page">
+<div class="app-layout">
+<div class="sidebar">
+  <div class="sidebar-brand"><div class="sidebar-logo"><div class="sidebar-logo-icon"><i class="bi bi-shield-check" style="color:white"></i></div><div><div class="sidebar-logo-text">SIKAP</div><div class="sidebar-logo-sub">Panel Guru</div></div></div></div>
+  <div class="sidebar-nav">
+    <button class="nav-item" onclick="goTo('p-guru')"><i class="bi bi-house"></i>Beranda</button>
+    <button class="nav-item" onclick="goTo('p-catat')"><i class="bi bi-plus-circle"></i>Catat Pelanggaran</button>
+    <button class="nav-item active" onclick="goTo('p-riwayat')"><i class="bi bi-clock-history"></i>Riwayat Saya</button>
+    <button class="nav-item" onclick="goTo('p-jurnal')"><i class="bi bi-journal-text"></i>Catat Jurnal</button>
+    <button class="nav-item" onclick="goTo('p-jadwal')"><i class="bi bi-calendar-week"></i>Jadwal Saya</button>
+  </div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" style="background:#059669">AF</div><div><div class="su-name">Ahmad Fauzi, S.Pd.</div><div class="su-role">Guru Matematika</div></div></div></div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left"><div class="ta-badge"><i class="bi bi-calendar3" style="font-size:12px"></i>2024/2025 — Semester Genap</div></div>
+    <div class="topbar-right"><button class="btn-logout" onclick="goTo('p-login')"><i class="bi bi-box-arrow-right"></i>Logout</button></div>
+  </div>
+  <div class="content">
+    <div class="page-header"><div><div class="page-title">Riwayat Catatan Saya</div><div class="page-sub">2024/2025 — Semester Genap</div></div><button class="btn btn-primary btn-sm" onclick="goTo('p-catat')"><i class="bi bi-plus-lg"></i>Catat Baru</button></div>
+    <div class="card">
+      <div class="card-body-p0">
+        <div class="tbl-wrap"><table><thead><tr><th>No</th><th>Tanggal</th><th>Siswa</th><th>Kelas</th><th>Pelanggaran</th><th>Kategori</th><th>Poin</th><th>Foto</th><th>Aksi</th></tr></thead><tbody>
+          <tr><td>1</td><td>16 Mar 2026</td><td><div class="text-semibold">Muhammad Rafi</div><div class="text-xs text-muted">25021</div></td><td><span class="badge b-blue">IX-A</span></td><td><div>Bolos Sekolah</div><div class="text-xs text-muted"><code>P006</code></div></td><td><span class="badge b-amber">Sedang</span></td><td><strong>25</strong></td><td><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='4' fill='%23e2e8f0'/%3E%3Ctext x='20' y='24' text-anchor='middle' font-size='14' fill='%2394a3b8'%3E📷%3C/text%3E%3C/svg%3E" style="border-radius:4px;cursor:pointer" title="Lihat foto bukti"></td><td><button class="btn btn-danger btn-sm" onclick="showToast('Catatan berhasil dihapus','success')"><i class="bi bi-trash"></i></button></td></tr>
+          <tr><td>2</td><td>16 Mar 2026</td><td><div class="text-semibold">Budi Santoso</div><div class="text-xs text-muted">25015</div></td><td><span class="badge b-blue">VIII-A</span></td><td><div>Terlambat masuk</div><div class="text-xs text-muted"><code>P001</code></div></td><td><span class="badge b-green">Ringan</span></td><td><strong>5</strong></td><td><span class="text-muted text-xs">—</span></td><td><button class="btn btn-danger btn-sm" onclick="showToast('Catatan berhasil dihapus','success')"><i class="bi bi-trash"></i></button></td></tr>
+          <tr><td>3</td><td>15 Mar 2026</td><td><div class="text-semibold">Siti Aminah</div><div class="text-xs text-muted">25002</div></td><td><span class="badge b-blue">VII-A</span></td><td><div>Tidak Berseragam</div><div class="text-xs text-muted"><code>P002</code></div></td><td><span class="badge b-green">Ringan</span></td><td><strong>10</strong></td><td><span class="text-muted text-xs">—</span></td><td><button class="btn btn-danger btn-sm" onclick="showToast('Catatan berhasil dihapus','success')"><i class="bi bi-trash"></i></button></td></tr>
+          <tr><td>4</td><td>14 Mar 2026</td><td><div class="text-semibold">Rizki Ramadhan</div><div class="text-xs text-muted">25016</div></td><td><span class="badge b-blue">VIII-B</span></td><td><div>Membawa HP</div><div class="text-xs text-muted"><code>P003</code></div></td><td><span class="badge b-amber">Sedang</span></td><td><strong>15</strong></td><td><span class="text-muted text-xs">—</span></td><td><button class="btn btn-danger btn-sm" onclick="showToast('Catatan berhasil dihapus','success')"><i class="bi bi-trash"></i></button></td></tr>
+          <tr><td>5</td><td>13 Mar 2026</td><td><div class="text-semibold">Dewi Lestari</div><div class="text-xs text-muted">25004</div></td><td><span class="badge b-blue">VII-B</span></td><td><div>Terlambat masuk</div><div class="text-xs text-muted"><code>P001</code></div></td><td><span class="badge b-green">Ringan</span></td><td><strong>5</strong></td><td><span class="text-muted text-xs">—</span></td><td><button class="btn btn-danger btn-sm" onclick="showToast('Catatan berhasil dihapus','success')"><i class="bi bi-trash"></i></button></td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: JURNAL SISWA -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="p-jurnal" class="page">
+<div class="app-layout">
+<div class="sidebar">
+  <div class="sidebar-brand"><div class="sidebar-logo"><div class="sidebar-logo-icon"><i class="bi bi-shield-check" style="color:white"></i></div><div><div class="sidebar-logo-text">SIKAP</div><div class="sidebar-logo-sub">Panel Guru</div></div></div></div>
+  <div class="sidebar-nav">
+    <button class="nav-item" onclick="goTo('p-guru')"><i class="bi bi-house"></i>Beranda</button>
+    <button class="nav-item" onclick="goTo('p-catat')"><i class="bi bi-plus-circle"></i>Catat Pelanggaran</button>
+    <button class="nav-item" onclick="goTo('p-riwayat')"><i class="bi bi-clock-history"></i>Riwayat Saya</button>
+    <button class="nav-item active" onclick="goTo('p-jurnal')"><i class="bi bi-journal-text"></i>Catat Jurnal</button>
+    <button class="nav-item" onclick="goTo('p-jadwal')"><i class="bi bi-calendar-week"></i>Jadwal Saya</button>
+  </div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" style="background:#059669">AF</div><div><div class="su-name">Ahmad Fauzi, S.Pd.</div><div class="su-role">Guru Matematika</div></div></div></div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left"><div class="ta-badge"><i class="bi bi-calendar3" style="font-size:12px"></i>2024/2025 — Semester Genap</div></div>
+    <div class="topbar-right"><button class="btn-logout" onclick="goTo('p-login')"><i class="bi bi-box-arrow-right"></i>Logout</button></div>
+  </div>
+  <div class="content">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem">
+      <button class="btn btn-outline btn-sm" onclick="goTo('p-guru')"><i class="bi bi-arrow-left"></i></button>
+      <div><div class="page-title">Catat Jurnal Siswa</div><div class="page-sub">2024/2025 — Semester Genap</div></div>
+    </div>
+    <div style="max-width:580px;margin:0 auto">
+      <!-- Step indicator jurnal -->
+      <div class="step-wrap">
+        <div class="step-item"><div class="step-circle active" id="js1">1</div><div class="step-label active" id="jl1">Pilih Siswa</div></div>
+        <div class="step-line" id="jln1"></div>
+        <div class="step-item"><div class="step-circle" id="js2">2</div><div class="step-label" id="jl2">Pilih Jenis</div></div>
+        <div class="step-line" id="jln2"></div>
+        <div class="step-item"><div class="step-circle" id="js3">3</div><div class="step-label" id="jl3">Tulis Catatan</div></div>
+      </div>
+
+      <!-- Jurnal Step 1 -->
+      <div id="js-step1" class="card">
+        <div class="card-body">
+          <h5 style="font-weight:700;margin-bottom:1rem"><span class="badge b-blue" style="margin-right:8px">1</span>Pilih Kelas & Siswa</h5>
+          <div class="g3" style="margin-bottom:1rem">
+            <div class="card-tap" onclick="jurPilihKelas('VII-A')"><div class="tap-label text-sm">VII-A</div></div>
+            <div class="card-tap" onclick="jurPilihKelas('VIII-A')"><div class="tap-label text-sm">VIII-A</div></div>
+            <div class="card-tap" onclick="jurPilihKelas('IX-A')"><div class="tap-label text-sm">IX-A</div></div>
+          </div>
+          <div id="jur-siswa-wrap" style="display:none">
+            <div style="position:relative;margin-bottom:8px"><i class="bi bi-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8"></i><input type="text" class="form-control" style="padding-left:34px" placeholder="Ketik nama siswa..."></div>
+            <div class="list-group" id="jur-siswa-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jurnal Step 2 -->
+      <div id="js-step2" class="card" style="display:none">
+        <div class="card-body">
+          <div style="display:flex;justify-content:space-between;margin-bottom:1rem">
+            <h5 style="font-weight:700"><span class="badge b-blue" style="margin-right:8px">2</span>Jenis Catatan</h5>
+            <button class="btn btn-outline btn-sm" onclick="jurGoStep(1)"><i class="bi bi-arrow-left"></i>Ganti</button>
+          </div>
+          <p class="text-muted text-sm" style="margin-bottom:1.25rem">Siswa: <strong id="jur-siswa-label">—</strong></p>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div class="card-tap" style="display:flex;gap:12px;align-items:center;text-align:left;padding:1rem" onclick="jurPilihJenis('observasi','Observasi')">
+              <div style="width:44px;height:44px;background:#dbeafe;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="bi bi-eye" style="color:#2563eb;font-size:18px"></i></div>
+              <div><div class="text-semibold">Observasi Perilaku & Kemajuan Belajar</div><div class="text-xs text-muted">Catat perkembangan, perubahan perilaku, prestasi belajar</div></div>
+            </div>
+            <div class="card-tap" style="display:flex;gap:12px;align-items:center;text-align:left;padding:1rem" onclick="jurPilihJenis('perhatian_khusus','Perhatian Khusus')">
+              <div style="width:44px;height:44px;background:#fef3c7;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="bi bi-exclamation-triangle" style="color:#d97706;font-size:18px"></i></div>
+              <div><div class="text-semibold">Catatan Perhatian Khusus</div><div class="text-xs text-muted">Siswa butuh perhatian lebih — masalah pribadi, keluarga, kesehatan</div></div>
+            </div>
+            <div class="card-tap" style="display:flex;gap:12px;align-items:center;text-align:left;padding:1rem" onclick="jurPilihJenis('interaksi_bermakna','Interaksi Bermakna')">
+              <div style="width:44px;height:44px;background:#d1fae5;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="bi bi-stars" style="color:#059669;font-size:18px"></i></div>
+              <div><div class="text-semibold">Interaksi Bermakna</div><div class="text-xs text-muted">Momen positif, prestasi, sikap inspiratif — dikirim ke orang tua</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jurnal Step 3 -->
+      <div id="js-step3" class="card" style="display:none">
+        <div class="card-body">
+          <div style="display:flex;justify-content:space-between;margin-bottom:1rem">
+            <h5 style="font-weight:700"><span class="badge b-blue" style="margin-right:8px">3</span>Tulis Catatan</h5>
+            <button class="btn btn-outline btn-sm" onclick="jurGoStep(2)"><i class="bi bi-arrow-left"></i>Ganti</button>
+          </div>
+          <p class="text-muted text-sm" style="margin-bottom:1rem"><span id="jur-jenis-label" class="badge b-blue"></span> — <strong id="jur-siswa-label2">—</strong></p>
+          <div class="form-group"><label class="form-label">Catatan <span style="color:#dc2626">*</span></label><textarea class="form-control" rows="4" placeholder="Tulis catatan Anda di sini..."></textarea></div>
+          <div class="form-group">
+            <label class="form-label">Foto / Dokumentasi <span style="color:#94a3b8;font-weight:400">(opsional)</span></label>
+            <div style="display:flex;gap:8px;margin-bottom:8px">
+              <button class="btn btn-outline btn-sm" style="flex:1"><i class="bi bi-camera me-1"></i>Ambil Foto</button>
+              <button class="btn btn-outline btn-sm" style="flex:1"><i class="bi bi-images me-1"></i>Dari Galeri</button>
+            </div>
+            <div class="foto-zone"><i class="bi bi-camera" style="font-size:1.5rem;color:#94a3b8;display:block;margin-bottom:4px"></i><div class="text-sm text-muted">Tap untuk ambil foto atau dari galeri</div><div class="text-xs text-muted mt-2">Dikompres otomatis sebelum upload</div></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tindak Lanjut</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div class="card-tap sel" style="padding:8px 12px;text-align:left;display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;background:#94a3b8;border-radius:50%;flex-shrink:0;display:inline-block"></span><span class="text-sm">Tidak perlu tindak lanjut</span></div>
+              <div class="card-tap" style="padding:8px 12px;text-align:left;display:flex;align-items:center;gap:8px" onclick="this.classList.toggle('sel')"><span style="width:10px;height:10px;background:#d97706;border-radius:50%;flex-shrink:0;display:inline-block"></span><span class="text-sm">Perlu dibicarakan</span></div>
+              <div class="card-tap" style="padding:8px 12px;text-align:left;display:flex;align-items:center;gap:8px" onclick="this.classList.toggle('sel')"><span style="width:10px;height:10px;background:#059669;border-radius:50%;flex-shrink:0;display:inline-block"></span><span class="text-sm">Sudah ditindaklanjuti</span></div>
+              <div class="card-tap" style="padding:8px 12px;text-align:left;display:flex;align-items:center;gap:8px" onclick="this.classList.toggle('sel')"><span style="width:10px;height:10px;background:#dc2626;border-radius:50%;flex-shrink:0;display:inline-block"></span><span class="text-sm">Perlu koordinasi BK</span></div>
+            </div>
+          </div>
+          <button class="btn btn-success w-full" style="font-size:1rem;padding:12px" onclick="showToast('Jurnal berhasil disimpan!','success');jurGoStep(1)"><i class="bi bi-journal-check"></i>Simpan Jurnal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: JADWAL MINGGUAN -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="p-jadwal" class="page">
+<div class="app-layout">
+<div class="sidebar">
+  <div class="sidebar-brand"><div class="sidebar-logo"><div class="sidebar-logo-icon"><i class="bi bi-shield-check" style="color:white"></i></div><div><div class="sidebar-logo-text">SIKAP</div><div class="sidebar-logo-sub">Panel Guru</div></div></div></div>
+  <div class="sidebar-nav">
+    <button class="nav-item" onclick="goTo('p-guru')"><i class="bi bi-house"></i>Beranda</button>
+    <button class="nav-item" onclick="goTo('p-catat')"><i class="bi bi-plus-circle"></i>Catat Pelanggaran</button>
+    <button class="nav-item" onclick="goTo('p-riwayat')"><i class="bi bi-clock-history"></i>Riwayat Saya</button>
+    <button class="nav-item" onclick="goTo('p-jurnal')"><i class="bi bi-journal-text"></i>Catat Jurnal</button>
+    <button class="nav-item active" onclick="goTo('p-jadwal')"><i class="bi bi-calendar-week"></i>Jadwal Saya</button>
+  </div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" style="background:#059669">AF</div><div><div class="su-name">Ahmad Fauzi, S.Pd.</div><div class="su-role">Guru Matematika</div></div></div></div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left"><div class="ta-badge"><i class="bi bi-calendar3" style="font-size:12px"></i>2024/2025 — Semester Genap</div></div>
+    <div class="topbar-right"><button class="btn-logout" onclick="goTo('p-login')"><i class="bi bi-box-arrow-right"></i>Logout</button></div>
+  </div>
+  <div class="content">
+    <div class="page-header">
+      <div><div class="page-title">Jadwal Mingguan Saya</div><div class="page-sub">2024/2025 — Semester Genap · Ahmad Fauzi, S.Pd.</div></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline btn-sm" onclick="jadwalTambahBaris()"><i class="bi bi-plus-lg"></i>Tambah Baris</button>
+        <button class="btn btn-success btn-sm" onclick="showToast('Jadwal berhasil disimpan!','success')"><i class="bi bi-save"></i>Simpan Jadwal</button>
+      </div>
+    </div>
+    <div class="alert alert-info"><i class="bi bi-info-circle"></i>Klik langsung pada sel untuk mengedit. Isi bebas — nama kelas, mata pelajaran, atau nama sekolah. Klik <strong>Simpan Jadwal</strong> setelah selesai.</div>
+    <div class="card">
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse" id="tabelJadwal">
+          <thead><tr>
+            <th style="width:70px;min-width:70px;background:#1a3a5c;color:white;padding:10px;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px">Jam Ke-</th>
+            <th style="width:120px;min-width:120px;background:#1a3a5c;color:white;padding:10px;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px">Waktu</th>
+            <th style="background:#1a3a5c;color:white;padding:10px;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px">Senin</th>
+            <th style="background:#1a3a5c;color:white;padding:10px;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px">Selasa</th>
+            <th style="background:#1a3a5c;color:white;padding:10px;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px">Rabu</th>
+            <th style="background:#1a3a5c;color:white;padding:10px;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px">Kamis</th>
+            <th style="background:#1a3a5c;color:white;padding:10px;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px">Jum'at</th>
+            <th style="background:#1a3a5c;color:white;padding:10px;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px">Sabtu</th>
+            <th style="background:#1a3a5c;color:white;padding:10px;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px">Minggu</th>
+            <th style="width:50px;background:#1a3a5c;color:white;padding:10px;font-size:0.75rem"><i class="bi bi-trash"></i></th>
+          </tr></thead>
+          <tbody id="jadwal-tbody">
+            <tr class="jadwal-row" style="border-bottom:1px solid #f1f5f9"><td style="padding:0"><input type="text" class="jadwal-input" value="1" style="text-align:center;font-weight:700"></td><td style="padding:0"><input type="text" class="jadwal-input" value="07.00-07.45"></td><td style="padding:0"><input type="text" class="jadwal-input" value="MTK VII-A"></td><td style="padding:0"><input type="text" class="jadwal-input" value="MTK IX-A"></td><td style="padding:0"><input type="text" class="jadwal-input" value="MTK VIII-B"></td><td style="padding:0"><input type="text" class="jadwal-input" value="MTK VII-B"></td><td style="padding:0"><input type="text" class="jadwal-input" value="MTK IX-B"></td><td style="padding:0"><input type="text" class="jadwal-input" value=""></td><td style="padding:0"><input type="text" class="jadwal-input" value=""></td><td style="text-align:center;padding:4px"><button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove();showToast('Baris dihapus','success')"><i class="bi bi-trash" style="font-size:12px"></i></button></td></tr>
+            <tr class="jadwal-row" style="border-bottom:1px solid #f1f5f9"><td style="padding:0"><input type="text" class="jadwal-input" value="2" style="text-align:center;font-weight:700"></td><td style="padding:0"><input type="text" class="jadwal-input" value="07.45-08.30"></td><td style="padding:0"><input type="text" class="jadwal-input" value="MTK VII-A"></td><td style="padding:0"><input type="text" class="jadwal-input" value="MTK IX-A"></td><td style="padding:0"><input type="text" class="jadwal-input" value="MTK VIII-B"></td><td style="padding:0"><input type="text" class="jadwal-input" value="MTK VII-B"></td><td style="padding:0"><input type="text" class="jadwal-input" value="MTK IX-B"></td><td style="padding:0"><input type="text" class="jadwal-input" value=""></td><td style="padding:0"><input type="text" class="jadwal-input" value=""></td><td style="text-align:center;padding:4px"><button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove();showToast('Baris dihapus','success')"><i class="bi bi-trash" style="font-size:12px"></i></button></td></tr>
+            <tr class="jadwal-row" style="border-bottom:1px solid #f1f5f9"><td style="padding:0"><input type="text" class="jadwal-input" value="3" style="text-align:center;font-weight:700"></td><td style="padding:0"><input type="text" class="jadwal-input" value="08.30-09.15"></td><td style="padding:0"><input type="text" class="jadwal-input" value="MTK TIK (SMP Lain)"></td><td style="padding:0"><input type="text" class="jadwal-input" value=""></td><td style="padding:0"><input type="text" class="jadwal-input" value=""></td><td style="padding:0"><input type="text" class="jadwal-input" value="MTK VIII-A"></td><td style="padding:0"><input type="text" class="jadwal-input" value=""></td><td style="padding:0"><input type="text" class="jadwal-input" value=""></td><td style="padding:0"><input type="text" class="jadwal-input" value=""></td><td style="text-align:center;padding:4px"><button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove();showToast('Baris dihapus','success')"><i class="bi bi-trash" style="font-size:12px"></i></button></td></tr>
+            <tr class="jadwal-row" style="border-bottom:1px solid #f1f5f9"><td style="padding:0"><input type="text" class="jadwal-input" value="4" style="text-align:center;font-weight:700"></td><td style="padding:0"><input type="text" class="jadwal-input" value="09.30-10.15"></td><td style="padding:0"><input type="text" class="jadwal-input" value=""></td><td style="padding:0"><input type="text" class="jadwal-input" value=""></td><td style="padding:0"><input type="text" class="jadwal-input" value="MTK VII-A"></td><td style="padding:0"><input type="text" class="jadwal-input" value="MTK VIII-A"></td><td style="padding:0"><input type="text" class="jadwal-input" value=""></td><td style="padding:0"><input type="text" class="jadwal-input" value=""></td><td style="padding:0"><input type="text" class="jadwal-input" value=""></td><td style="text-align:center;padding:4px"><button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove();showToast('Baris dihapus','success')"><i class="bi bi-trash" style="font-size:12px"></i></button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="padding:0.75rem 1.25rem;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #f1f5f9">
+        <span class="text-muted text-sm" id="jadwal-count">4 baris</span>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm" onclick="jadwalTambahBaris()"><i class="bi bi-plus-lg"></i>Tambah Baris</button>
+          <button class="btn btn-success btn-sm" onclick="showToast('Jadwal berhasil disimpan!','success')"><i class="bi bi-save"></i>Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: DASHBOARD BK -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="p-bk" class="page">
+<div class="app-layout">
+<div class="sidebar">
+  <div class="sidebar-brand"><div class="sidebar-logo"><div class="sidebar-logo-icon"><i class="bi bi-shield-check" style="color:white"></i></div><div><div class="sidebar-logo-text">SIKAP</div><div class="sidebar-logo-sub">Panel Guru BK</div></div></div></div>
+  <div class="sidebar-nav">
+    <button class="nav-item active" onclick="goTo('p-bk')"><i class="bi bi-speedometer2"></i>Dashboard</button>
+    <button class="nav-item" onclick="goTo('p-catat')"><i class="bi bi-plus-circle"></i>Tambah Pelanggaran</button>
+    <button class="nav-item" onclick="goTo('p-monitor')"><i class="bi bi-eye"></i>Monitor Pelanggaran</button>
+    <button class="nav-item" onclick="goTo('p-rekap')"><i class="bi bi-bar-chart"></i>Rekapitulasi</button>
+    <button class="nav-item" onclick="goTo('p-jurnal')"><i class="bi bi-journal-text"></i>Catat Jurnal</button>
+    <button class="nav-item" onclick="goTo('p-jadwal')"><i class="bi bi-calendar-week"></i>Jadwal Saya</button>
+  </div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" style="background:#d97706">SR</div><div><div class="su-name">Siti Rahayu, S.Psi.</div><div class="su-role">Guru BK</div></div></div></div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left"><div class="ta-badge"><i class="bi bi-calendar3" style="font-size:12px"></i>2024/2025 — Semester Genap</div></div>
+    <div class="topbar-right"><div class="topbar-user"><i class="bi bi-person-circle"></i>Siti Rahayu<span class="badge b-amber" style="font-size:0.68rem">BK</span></div><button class="btn-logout" onclick="goTo('p-login')"><i class="bi bi-box-arrow-right"></i>Logout</button></div>
+  </div>
+  <div class="content">
+    <div class="page-header"><div><div class="page-title">Dashboard BK</div><div class="page-sub">2024/2025 — Semester Genap</div></div><button class="btn btn-primary btn-sm" onclick="goTo('p-catat')"><i class="bi bi-plus-lg"></i>Tambah Pelanggaran</button></div>
+    <div class="stat-grid">
+      <div class="stat-card" style="background:linear-gradient(135deg,#1a3a5c,#2563eb)"><div class="s-label">Total Pelanggaran</div><div class="s-value">147</div><div class="s-icon"><i class="bi bi-exclamation-triangle"></i></div></div>
+      <div class="stat-card" style="background:linear-gradient(135deg,#065f46,#059669)"><div class="s-label">Siswa Melanggar</div><div class="s-value">63</div><div class="s-icon"><i class="bi bi-people"></i></div></div>
+      <div class="stat-card" style="background:linear-gradient(135deg,#92400e,#d97706)"><div class="s-label">Hari Ini</div><div class="s-value">7</div><div class="s-icon"><i class="bi bi-calendar-day"></i></div></div>
+      <div class="stat-card" style="background:linear-gradient(135deg,#7f1d1d,#dc2626)"><div class="s-label">Perlu Perhatian</div><div class="s-value">5</div><div class="s-icon"><i class="bi bi-exclamation-circle"></i></div></div>
+    </div>
+    <!-- Distribusi sanksi -->
+    <div class="card mb-4">
+      <div class="card-header" style="padding-bottom:0.75rem"><div class="card-title"><i class="bi bi-shield-exclamation" style="color:#d97706"></i>Distribusi Sanksi Siswa</div></div>
+      <div class="card-body"><div class="g4">
+        <div style="text-align:center;padding:12px;border-radius:10px;border:2px solid #d1fae5"><div style="font-size:1.75rem;font-weight:700;color:#059669">38</div><div style="font-size:0.75rem;font-weight:600;color:#059669">Peringatan Lisan</div><div style="font-size:0.68rem;color:#94a3b8">1–25 poin</div></div>
+        <div style="text-align:center;padding:12px;border-radius:10px;border:2px solid #fef3c7"><div style="font-size:1.75rem;font-weight:700;color:#d97706">15</div><div style="font-size:0.75rem;font-weight:600;color:#d97706">Peringatan Tertulis</div><div style="font-size:0.68rem;color:#94a3b8">26–50 poin</div></div>
+        <div style="text-align:center;padding:12px;border-radius:10px;border:2px solid #fee2e2"><div style="font-size:1.75rem;font-weight:700;color:#dc2626">5</div><div style="font-size:0.75rem;font-weight:600;color:#dc2626">SP 2 + Pernyataan</div><div style="font-size:0.68rem;color:#94a3b8">51–75 poin</div></div>
+        <div style="text-align:center;padding:12px;border-radius:10px;border:2px solid #e2e8f0"><div style="font-size:1.75rem;font-weight:700;color:#1e293b">2</div><div style="font-size:0.75rem;font-weight:600;color:#1e293b">Skorsing</div><div style="font-size:0.68rem;color:#94a3b8">76+ poin</div></div>
+      </div></div>
+    </div>
+    <div class="g75 mb-4">
+      <div class="card">
+        <div class="card-header" style="padding-bottom:0.75rem"><div class="card-title"><i class="bi bi-graph-up" style="color:#2563eb"></i>Pelanggaran 7 Hari Terakhir</div></div>
+        <div class="card-body"><canvas id="bk-chart" height="100"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header" style="padding-bottom:0.75rem"><div class="card-title"><i class="bi bi-pie-chart" style="color:#d97706"></i>Per Kategori</div></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:16px">
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:0.825rem;font-weight:600">Ringan</span><span style="font-size:0.8rem;color:#94a3b8">89 (61%)</span></div><div class="progress"><div class="progress-bar" style="width:61%;background:#059669"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:0.825rem;font-weight:600">Sedang</span><span style="font-size:0.8rem;color:#94a3b8">43 (29%)</span></div><div class="progress"><div class="progress-bar" style="width:29%;background:#d97706"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:0.825rem;font-weight:600">Berat</span><span style="font-size:0.8rem;color:#94a3b8">15 (10%)</span></div><div class="progress"><div class="progress-bar" style="width:10%;background:#dc2626"></div></div></div>
+        </div>
+      </div>
+    </div>
+    <!-- Jadwal -->
+    <div class="g2 mb-4">
+      <div class="card">
+        <div class="card-header" style="padding-bottom:0.75rem"><div class="card-title"><i class="bi bi-calendar-day" style="color:#2563eb"></i>Hari Ini — <span style="color:#2563eb">Senin, 16 Mar 2026</span></div></div>
+        <div class="card-body" style="padding-top:0.75rem;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:1px solid #f1f5f9"><div style="width:70px;text-align:center;flex-shrink:0"><div style="font-weight:700;color:#2563eb;font-size:0.95rem">08.00</div></div><div style="border-left:2px solid #e2e8f0;padding-left:12px"><div style="font-weight:600;font-size:0.85rem">Konseling Individu — VII-A</div></div></div>
+          <div style="display:flex;align-items:center;gap:12px"><div style="width:70px;text-align:center;flex-shrink:0"><div style="font-weight:700;color:#2563eb;font-size:0.95rem">10.00</div></div><div style="border-left:2px solid #e2e8f0;padding-left:12px"><div style="font-weight:600;font-size:0.85rem">Bimbingan Klasikal — IX-A</div></div></div>
+          <div class="text-muted text-xs"><i class="bi bi-info-circle" style="margin-right:4px"></i>2 sesi hari ini</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header" style="padding-bottom:0.75rem"><div class="card-title"><i class="bi bi-calendar-plus" style="color:#94a3b8"></i>Besok — <span style="color:#94a3b8">Selasa, 17 Mar 2026</span></div></div>
+        <div class="card-body" style="padding-top:0.75rem">
+          <div style="display:flex;align-items:center;gap:12px"><div style="width:70px;text-align:center;flex-shrink:0"><div style="font-weight:700;color:#94a3b8;font-size:0.95rem">09.00</div></div><div style="border-left:2px solid #e2e8f0;padding-left:12px"><div style="font-weight:600;font-size:0.85rem">Konseling Kelompok — VIII-B</div></div></div>
+          <div class="text-muted text-xs" style="margin-top:10px"><i class="bi bi-info-circle" style="margin-right:4px"></i>1 sesi besok</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: MONITOR BK -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="p-monitor" class="page">
+<div class="app-layout">
+<div class="sidebar">
+  <div class="sidebar-brand"><div class="sidebar-logo"><div class="sidebar-logo-icon"><i class="bi bi-shield-check" style="color:white"></i></div><div><div class="sidebar-logo-text">SIKAP</div><div class="sidebar-logo-sub">Panel Guru BK</div></div></div></div>
+  <div class="sidebar-nav">
+    <button class="nav-item" onclick="goTo('p-bk')"><i class="bi bi-speedometer2"></i>Dashboard</button>
+    <button class="nav-item" onclick="goTo('p-catat')"><i class="bi bi-plus-circle"></i>Tambah Pelanggaran</button>
+    <button class="nav-item active" onclick="goTo('p-monitor')"><i class="bi bi-eye"></i>Monitor Pelanggaran</button>
+    <button class="nav-item" onclick="goTo('p-rekap')"><i class="bi bi-bar-chart"></i>Rekapitulasi</button>
+    <button class="nav-item" onclick="goTo('p-jurnal')"><i class="bi bi-journal-text"></i>Catat Jurnal</button>
+  </div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" style="background:#d97706">SR</div><div><div class="su-name">Siti Rahayu, S.Psi.</div><div class="su-role">Guru BK</div></div></div></div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left"><div class="ta-badge"><i class="bi bi-calendar3" style="font-size:12px"></i>2024/2025 — Semester Genap</div></div>
+    <div class="topbar-right"><button class="btn-logout" onclick="goTo('p-login')"><i class="bi bi-box-arrow-right"></i>Logout</button></div>
+  </div>
+  <div class="content">
+    <div class="page-header"><div><div class="page-title">Monitor Pelanggaran</div><div class="page-sub">2024/2025 — Semester Genap</div></div></div>
+    <!-- Filter -->
+    <div class="card mb-4">
+      <div class="card-body" style="padding:0.75rem 1.25rem">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+          <div style="flex:1;min-width:120px"><label class="form-label">Kelas</label><select class="form-control"><option>Semua Kelas</option><option>VII-A</option><option>VII-B</option><option>VIII-A</option><option>VIII-B</option><option>IX-A</option><option>IX-B</option></select></div>
+          <div style="flex:1;min-width:100px"><label class="form-label">Kategori</label><select class="form-control"><option>Semua</option><option>Ringan</option><option>Sedang</option><option>Berat</option></select></div>
+          <div style="flex:1;min-width:120px"><label class="form-label">Dari Tanggal</label><input type="date" class="form-control" value="2026-03-01"></div>
+          <div style="flex:1;min-width:120px"><label class="form-label">Sampai</label><input type="date" class="form-control" value="2026-03-16"></div>
+          <div><button class="btn btn-primary btn-sm"><i class="bi bi-search"></i>Filter</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap"><table><thead><tr><th>No</th><th>Tanggal</th><th>Siswa</th><th>Kelas</th><th>Pelanggaran</th><th>Kategori</th><th>Poin</th><th>Bukti</th><th>Dicatat Oleh</th><th>Aksi</th></tr></thead><tbody>
+        <tr><td>1</td><td>16 Mar 2026</td><td><div class="text-semibold">Muhammad Rafi</div><div class="text-xs text-muted">25021</div></td><td><span class="badge b-blue">IX-A</span></td><td><div>Bolos Sekolah</div><div class="text-xs text-muted"><code>P006</code></div></td><td><span class="badge b-amber">Sedang</span></td><td><strong>25</strong></td><td><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='4' fill='%23e2e8f0'/%3E%3Ctext x='20' y='24' text-anchor='middle' font-size='14' fill='%2394a3b8'%3E📷%3C/text%3E%3C/svg%3E" style="border-radius:4px;cursor:pointer"></td><td><span class="text-sm">Ahmad Fauzi</span></td><td><button class="btn btn-danger btn-sm" onclick="showToast('Catatan berhasil dihapus','success')"><i class="bi bi-trash"></i></button></td></tr>
+        <tr><td>2</td><td>15 Mar 2026</td><td><div class="text-semibold">Siti Nurhaliza</div><div class="text-xs text-muted">25007</div></td><td><span class="badge b-blue">VII-B</span></td><td><div>Membawa HP</div><div class="text-xs text-muted"><code>P003</code></div></td><td><span class="badge b-amber">Sedang</span></td><td><strong>15</strong></td><td><span class="text-muted text-xs">—</span></td><td><span class="text-sm">Ahmad Fauzi</span></td><td><button class="btn btn-danger btn-sm" onclick="showToast('Catatan berhasil dihapus','success')"><i class="bi bi-trash"></i></button></td></tr>
+        <tr><td>3</td><td>14 Mar 2026</td><td><div class="text-semibold">Dewi Rahayu</div><div class="text-xs text-muted">25026</div></td><td><span class="badge b-blue">IX-B</span></td><td><div>Berkelahi</div><div class="text-xs text-muted"><code>P007</code></div></td><td><span class="badge b-red">Berat</span></td><td><strong>50</strong></td><td><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='4' fill='%23e2e8f0'/%3E%3Ctext x='20' y='24' text-anchor='middle' font-size='14' fill='%2394a3b8'%3E📷%3C/text%3E%3C/svg%3E" style="border-radius:4px;cursor:pointer"></td><td><span class="text-sm">Siti Rahayu</span></td><td><button class="btn btn-danger btn-sm" onclick="showToast('Catatan berhasil dihapus','success')"><i class="bi bi-trash"></i></button></td></tr>
+        <tr><td>4</td><td>14 Mar 2026</td><td><div class="text-semibold">Budi Santoso</div><div class="text-xs text-muted">25015</div></td><td><span class="badge b-blue">VIII-A</span></td><td><div>Terlambat</div><div class="text-xs text-muted"><code>P001</code></div></td><td><span class="badge b-green">Ringan</span></td><td><strong>5</strong></td><td><span class="text-muted text-xs">—</span></td><td><span class="text-sm">Ahmad Fauzi</span></td><td><button class="btn btn-danger btn-sm" onclick="showToast('Catatan berhasil dihapus','success')"><i class="bi bi-trash"></i></button></td></tr>
+        <tr><td>5</td><td>13 Mar 2026</td><td><div class="text-semibold">Rizki Ramadhan</div><div class="text-xs text-muted">25016</div></td><td><span class="badge b-blue">VIII-B</span></td><td><div>Bolos Pelajaran</div><div class="text-xs text-muted"><code>P005</code></div></td><td><span class="badge b-amber">Sedang</span></td><td><strong>20</strong></td><td><span class="text-muted text-xs">—</span></td><td><span class="text-sm">Siti Rahayu</span></td><td><button class="btn btn-danger btn-sm" onclick="showToast('Catatan berhasil dihapus','success')"><i class="bi bi-trash"></i></button></td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: REKAP & DETAIL SISWA -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="p-rekap" class="page">
+<div class="app-layout">
+<div class="sidebar">
+  <div class="sidebar-brand"><div class="sidebar-logo"><div class="sidebar-logo-icon"><i class="bi bi-shield-check" style="color:white"></i></div><div><div class="sidebar-logo-text">SIKAP</div><div class="sidebar-logo-sub">Panel Guru BK</div></div></div></div>
+  <div class="sidebar-nav">
+    <button class="nav-item" onclick="goTo('p-bk')"><i class="bi bi-speedometer2"></i>Dashboard</button>
+    <button class="nav-item" onclick="goTo('p-catat')"><i class="bi bi-plus-circle"></i>Tambah Pelanggaran</button>
+    <button class="nav-item" onclick="goTo('p-monitor')"><i class="bi bi-eye"></i>Monitor Pelanggaran</button>
+    <button class="nav-item active" onclick="goTo('p-rekap')"><i class="bi bi-bar-chart"></i>Rekapitulasi</button>
+    <button class="nav-item" onclick="goTo('p-jurnal')"><i class="bi bi-journal-text"></i>Catat Jurnal</button>
+  </div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" style="background:#d97706">SR</div><div><div class="su-name">Siti Rahayu, S.Psi.</div><div class="su-role">Guru BK</div></div></div></div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left"><div class="ta-badge"><i class="bi bi-calendar3" style="font-size:12px"></i>2024/2025 — Semester Genap</div></div>
+    <div class="topbar-right"><button class="btn-logout" onclick="goTo('p-login')"><i class="bi bi-box-arrow-right"></i>Logout</button></div>
+  </div>
+  <div class="content">
+    <div class="page-header"><div><div class="page-title">Rekapitulasi Pelanggaran</div><div class="page-sub">2024/2025 — Semester Genap</div></div><button class="btn btn-primary btn-sm" onclick="showToast('Export sedang diproses...','info')"><i class="bi bi-download"></i>Export Rekap</button></div>
+    <!-- Filter kelas -->
+    <div class="card mb-4">
+      <div class="card-body" style="padding:0.75rem 1.25rem">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <span class="text-xs text-muted" style="font-weight:600">FILTER KELAS:</span>
+          <button class="btn btn-primary btn-sm" onclick="filterRekapKelas(this,'semua')">Semua</button>
+          <button class="btn btn-outline btn-sm" onclick="filterRekapKelas(this,'VII-A')">VII-A</button>
+          <button class="btn btn-outline btn-sm" onclick="filterRekapKelas(this,'VII-B')">VII-B</button>
+          <button class="btn btn-outline btn-sm" onclick="filterRekapKelas(this,'VIII-A')">VIII-A</button>
+          <button class="btn btn-outline btn-sm" onclick="filterRekapKelas(this,'VIII-B')">VIII-B</button>
+          <button class="btn btn-outline btn-sm" onclick="filterRekapKelas(this,'IX-A')">IX-A</button>
+          <button class="btn btn-outline btn-sm" onclick="filterRekapKelas(this,'IX-B')">IX-B</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap"><table id="rekap-table"><thead><tr><th>No</th><th>Siswa</th><th>Kelas</th><th>Ringan</th><th>Sedang</th><th>Berat</th><th>Kasus</th><th>Total Poin</th><th>Sanksi</th><th>Aksi</th></tr></thead><tbody id="rekap-tbody"></tbody></table></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Detail panel -->
+<div class="detail-overlay" id="detail-overlay" onclick="if(event.target===this)closeDetail()">
+  <div class="detail-panel">
+    <div class="detail-header">
+      <div style="font-weight:700;font-size:1rem">Detail Siswa</div>
+      <button onclick="closeDetail()" style="width:32px;height:32px;border-radius:8px;border:1px solid #e2e8f0;background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:#94a3b8"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <!-- Profil -->
+    <div style="padding:1.5rem;text-align:center;border-bottom:1px solid #f1f5f9">
+      <div style="width:64px;height:64px;border-radius:50%;background:#2563eb;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:white;font-weight:700;margin:0 auto 12px" id="d-avatar">DR</div>
+      <div style="font-size:1.1rem;font-weight:700" id="d-nama">Dewi Rahayu</div>
+      <div class="text-muted text-sm" id="d-meta">NIS: 25026 · IX-B</div>
+      <div style="margin-top:8px"><span class="badge b-red" id="d-sanksi">Skorsing</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+        <div style="background:#f8fafc;border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.5rem;font-weight:700;color:#dc2626" id="d-poin">85</div><div class="text-xs text-muted">Total Poin</div></div>
+        <div style="background:#f8fafc;border-radius:10px;padding:10px;text-align:center"><div style="font-size:1.5rem;font-weight:700;color:#2563eb" id="d-kasus">6</div><div class="text-xs text-muted">Total Kasus</div></div>
+      </div>
+    </div>
+    <!-- Sanksi -->
+    <div id="d-sanksi-card" style="margin:1rem 1.5rem;padding:12px 14px;border-radius:10px;background:#fee2e2;border-left:4px solid #dc2626">
+      <div style="font-weight:700;color:#dc2626;margin-bottom:4px"><i class="bi bi-shield-exclamation" style="margin-right:6px"></i><span id="d-sanksi-nama">Skorsing</span></div>
+      <div class="text-sm" style="color:#991b1b" id="d-sanksi-desc">Siswa diskors sementara dari kegiatan sekolah</div>
+    </div>
+    <!-- Riwayat pelanggaran -->
+    <div style="padding:0 1.5rem;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin-bottom:0.5rem">Riwayat Pelanggaran</div>
+    <div id="d-list" style="border-top:1px solid #f1f5f9">
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 1.5rem;border-bottom:1px solid #f8fafc"><div style="width:10px;height:10px;border-radius:50%;background:#dc2626;flex-shrink:0"></div><div style="flex:1"><div style="font-weight:600;font-size:0.85rem">Berkelahi</div><div class="text-xs text-muted">14 Mar 2026 · P007</div></div><span class="badge b-red">50 poin</span></div>
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 1.5rem;border-bottom:1px solid #f8fafc"><div style="width:10px;height:10px;border-radius:50%;background:#d97706;flex-shrink:0"></div><div style="flex:1"><div style="font-weight:600;font-size:0.85rem">Bolos Sekolah</div><div class="text-xs text-muted">08 Mar 2026 · P006</div></div><span class="badge b-amber">25 poin</span></div>
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 1.5rem"><div style="width:10px;height:10px;border-radius:50%;background:#d97706;flex-shrink:0"></div><div style="flex:1"><div style="font-weight:600;font-size:0.85rem">Membawa HP/gadget</div><div class="text-xs text-muted">02 Mar 2026 · P003</div></div><span class="badge b-amber">15 poin</span></div>
+    </div>
+    <!-- Cetak surat -->
+    <div style="padding:0 1.5rem;font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin:1rem 0 0.5rem">Cetak Surat Resmi</div>
+    <div style="padding:0 1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem">
+      <button class="btn btn-outline btn-sm" style="border-color:#d97706;color:#92400e" onclick="showToast('Membuka preview surat...','info')"><i class="bi bi-file-text"></i>Surat Peringatan</button>
+      <button class="btn btn-outline btn-sm" style="border-color:#2563eb;color:#1d4ed8" onclick="showToast('Membuka preview surat...','info')"><i class="bi bi-people"></i>Panggilan Ortu</button>
+      <button class="btn btn-outline btn-sm" style="border-color:#059669;color:#065f46" onclick="showToast('Membuka preview surat...','info')"><i class="bi bi-pen"></i>Surat Pernyataan</button>
+      <button class="btn btn-outline btn-sm" style="border-color:#dc2626;color:#991b1b" onclick="showToast('Membuka preview surat...','info')"><i class="bi bi-slash-circle"></i>Skorsing</button>
+    </div>
+    <!-- WhatsApp -->
+    <div style="padding:1rem 1.5rem;border-top:1px solid #f1f5f9">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><i class="bi bi-whatsapp" style="color:#25d366;font-size:18px"></i><div><div style="font-weight:600;font-size:0.85rem">Ibu Sari (Orang Tua)</div><div class="text-xs text-muted">+62 812 3456 7890</div></div></div>
+      <button class="btn btn-wa w-full" onclick="showToast('Membuka WhatsApp...','success')"><i class="bi bi-whatsapp"></i>Kirim Notifikasi WhatsApp</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: DASHBOARD ORANG TUA -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="p-ortu" class="page">
+<div class="app-layout">
+<div class="sidebar">
+  <div class="sidebar-brand"><div class="sidebar-logo"><div class="sidebar-logo-icon"><i class="bi bi-shield-check" style="color:white"></i></div><div><div class="sidebar-logo-text">SIKAP</div><div class="sidebar-logo-sub">Portal Orang Tua</div></div></div></div>
+  <div class="sidebar-nav">
+    <button class="nav-item active" onclick="goTo('p-ortu')"><i class="bi bi-house"></i>Beranda</button>
+    <button class="nav-item" onclick="goTo('p-ortu-pel')"><i class="bi bi-exclamation-triangle"></i>Pelanggaran</button>
+    <button class="nav-item" onclick=""><i class="bi bi-journal-text"></i>Catatan Positif</button>
+    <button class="nav-item" onclick="goTo('p-notif')" style="position:relative"><i class="bi bi-bell"></i>Notifikasi<span style="background:#dc2626;color:white;border-radius:50%;width:18px;height:18px;font-size:0.65rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-left:4px">3</span></button>
+  </div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" style="background:#7c3aed">BF</div><div><div class="su-name">Bapak Fauzan</div><div class="su-role">Orang Tua / Wali</div></div></div></div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left"><div class="ta-badge"><i class="bi bi-calendar3" style="font-size:12px"></i>2024/2025 — Semester Genap</div></div>
+    <div class="topbar-right"><div class="topbar-user"><i class="bi bi-person-circle"></i>Bapak Fauzan<span class="badge b-purple" style="font-size:0.68rem">Ortu</span></div><button class="btn-logout" onclick="goTo('p-login')"><i class="bi bi-box-arrow-right"></i>Logout</button></div>
+  </div>
+  <div class="content">
+    <div class="page-header"><div><div class="page-title">Informasi Anak Anda 👨‍👦</div><div class="page-sub">2024/2025 — Semester Genap</div></div></div>
+    <!-- Alert notif baru -->
+    <div class="alert alert-warning mb-4"><i class="bi bi-bell-fill"></i>Ada <strong>3 notifikasi baru</strong> untuk Anda. <button onclick="goTo('p-notif')" style="background:none;border:none;cursor:pointer;color:#92400e;font-weight:600;text-decoration:underline">Lihat semua</button></div>
+    <!-- Profil siswa -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <div style="display:flex;align-items:center;gap:1.5rem">
+          <div style="width:64px;height:64px;border-radius:50%;background:#2563eb;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:white;font-weight:700;flex-shrink:0">MR</div>
+          <div>
+            <div style="font-size:1.1rem;font-weight:700">Muhammad Rafi</div>
+            <div class="text-muted text-sm">NIS: 25021 · Kelas IX-A</div>
+            <span class="badge b-blue" style="margin-top:4px">2024/2025 Semester Genap</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Statistik -->
+    <div class="g2 mb-4" style="grid-template-columns:1fr 1fr 1fr;grid-template-columns:repeat(3,1fr)">
+      <div class="card" style="text-align:center;padding:1.25rem"><div style="font-size:2rem;font-weight:700;color:#dc2626">65</div><div class="text-muted text-sm" style="margin-top:4px">Total Poin</div></div>
+      <div class="card" style="text-align:center;padding:1.25rem"><div style="font-size:2rem;font-weight:700;color:#d97706">4</div><div class="text-muted text-sm" style="margin-top:4px">Total Kasus</div></div>
+      <div class="card" style="text-align:center;padding:1.25rem;display:flex;align-items:center;justify-content:center;flex-direction:column">
+        <div style="font-weight:700;color:#dc2626;font-size:0.95rem"><i class="bi bi-shield-exclamation" style="margin-right:4px"></i>SP 2 + Pernyataan</div>
+        <div class="text-muted text-xs" style="margin-top:4px">Sanksi berlaku</div>
+      </div>
+    </div>
+    <div class="g2 mb-4">
+      <!-- Pelanggaran terbaru -->
+      <div class="card">
+        <div class="card-header" style="padding-bottom:0.75rem"><div class="card-title"><i class="bi bi-exclamation-triangle" style="color:#dc2626"></i>Pelanggaran Terbaru</div><button class="btn btn-outline btn-sm" onclick="goTo('p-ortu-pel')">Lihat Semua</button></div>
+        <div>
+          <div style="padding:10px 1.25rem;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center"><div><div class="text-semibold text-sm">Bolos Sekolah</div><div class="text-xs text-muted">16 Mar 2026</div></div><div style="text-align:right"><span class="badge b-amber">Sedang</span><div class="text-bold text-sm" style="color:#dc2626;margin-top:2px">25 poin</div></div></div>
+          <div style="padding:10px 1.25rem;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center"><div><div class="text-semibold text-sm">Membawa HP</div><div class="text-xs text-muted">08 Mar 2026</div></div><div style="text-align:right"><span class="badge b-amber">Sedang</span><div class="text-bold text-sm" style="color:#dc2626;margin-top:2px">15 poin</div></div></div>
+          <div style="padding:10px 1.25rem;display:flex;justify-content:space-between;align-items:center"><div><div class="text-semibold text-sm">Terlambat masuk</div><div class="text-xs text-muted">02 Mar 2026</div></div><div style="text-align:right"><span class="badge b-green">Ringan</span><div class="text-bold text-sm" style="color:#dc2626;margin-top:2px">5 poin</div></div></div>
+        </div>
+      </div>
+      <!-- Catatan positif -->
+      <div class="card">
+        <div class="card-header" style="padding-bottom:0.75rem"><div class="card-title"><i class="bi bi-stars" style="color:#059669"></i>Catatan Positif</div><button class="btn btn-outline btn-sm">Lihat Semua</button></div>
+        <div>
+          <div style="padding:12px 1.25rem;border-bottom:1px solid #f1f5f9;border-left:3px solid #059669"><div class="text-semibold text-sm mb-1">Rafi aktif bertanya dan berhasil menjawab soal MTK dengan benar di depan kelas</div><div class="text-xs text-muted">12 Mar 2026 · Ahmad Fauzi, S.Pd.</div></div>
+          <div style="padding:12px 1.25rem;border-left:3px solid #059669"><div class="text-semibold text-sm mb-1">Membantu teman yang kesulitan mengerjakan tugas tanpa diminta</div><div class="text-xs text-muted">05 Mar 2026 · Siti Rahayu, S.Psi.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: PELANGGARAN ORTU -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="p-ortu-pel" class="page">
+<div class="app-layout">
+<div class="sidebar">
+  <div class="sidebar-brand"><div class="sidebar-logo"><div class="sidebar-logo-icon"><i class="bi bi-shield-check" style="color:white"></i></div><div><div class="sidebar-logo-text">SIKAP</div><div class="sidebar-logo-sub">Portal Orang Tua</div></div></div></div>
+  <div class="sidebar-nav">
+    <button class="nav-item" onclick="goTo('p-ortu')"><i class="bi bi-house"></i>Beranda</button>
+    <button class="nav-item active" onclick="goTo('p-ortu-pel')"><i class="bi bi-exclamation-triangle"></i>Pelanggaran</button>
+    <button class="nav-item" onclick=""><i class="bi bi-journal-text"></i>Catatan Positif</button>
+    <button class="nav-item" onclick="goTo('p-notif')"><i class="bi bi-bell"></i>Notifikasi<span style="background:#dc2626;color:white;border-radius:50%;width:18px;height:18px;font-size:0.65rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-left:4px">3</span></button>
+  </div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" style="background:#7c3aed">BF</div><div><div class="su-name">Bapak Fauzan</div><div class="su-role">Orang Tua / Wali</div></div></div></div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left"><div class="ta-badge"><i class="bi bi-calendar3" style="font-size:12px"></i>2024/2025 — Semester Genap</div></div>
+    <div class="topbar-right"><button class="btn-logout" onclick="goTo('p-login')"><i class="bi bi-box-arrow-right"></i>Logout</button></div>
+  </div>
+  <div class="content">
+    <div class="page-header">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="btn btn-outline btn-sm" onclick="goTo('p-ortu')"><i class="bi bi-arrow-left"></i></button>
+        <div><div class="page-title">Riwayat Pelanggaran</div><div class="page-sub">Muhammad Rafi · IX-A · 2024/2025 Semester Genap</div></div>
+      </div>
+      <div class="card" style="padding:0.75rem 1.25rem;text-align:center"><div style="font-size:1.5rem;font-weight:700;color:#dc2626">65</div><div class="text-muted text-xs">Total Poin</div></div>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap"><table><thead><tr><th>No</th><th>Tanggal</th><th>Pelanggaran</th><th>Kategori</th><th>Poin</th><th>Bukti</th><th>Dicatat Oleh</th></tr></thead><tbody>
+        <tr><td>1</td><td>16 Mar 2026</td><td><div class="text-semibold">Bolos Sekolah</div><div class="text-xs text-muted"><code>P006</code></div></td><td><span class="badge b-amber">Sedang</span></td><td><strong style="color:#dc2626">25</strong></td><td><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='4' fill='%23e2e8f0'/%3E%3Ctext x='20' y='24' text-anchor='middle' font-size='14' fill='%2394a3b8'%3E📷%3C/text%3E%3C/svg%3E" style="border-radius:4px"></td><td><span class="text-sm">Ahmad Fauzi, S.Pd.</span></td></tr>
+        <tr><td>2</td><td>08 Mar 2026</td><td><div class="text-semibold">Membawa HP/gadget</div><div class="text-xs text-muted"><code>P003</code></div></td><td><span class="badge b-amber">Sedang</span></td><td><strong style="color:#dc2626">15</strong></td><td><span class="text-muted text-xs">—</span></td><td><span class="text-sm">Ahmad Fauzi, S.Pd.</span></td></tr>
+        <tr><td>3</td><td>02 Mar 2026</td><td><div class="text-semibold">Terlambat masuk sekolah</div><div class="text-xs text-muted"><code>P001</code></div></td><td><span class="badge b-green">Ringan</span></td><td><strong style="color:#dc2626">5</strong></td><td><span class="text-muted text-xs">—</span></td><td><span class="text-sm">Ahmad Fauzi, S.Pd.</span></td></tr>
+        <tr><td>4</td><td>22 Feb 2026</td><td><div class="text-semibold">Bolos Pelajaran</div><div class="text-xs text-muted"><code>P005</code></div></td><td><span class="badge b-amber">Sedang</span></td><td><strong style="color:#dc2626">20</strong></td><td><span class="text-muted text-xs">—</span></td><td><span class="text-sm">Siti Rahayu, S.Psi.</span></td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: NOTIFIKASI ORANG TUA -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="p-notif" class="page">
+<div class="app-layout">
+<div class="sidebar">
+  <div class="sidebar-brand"><div class="sidebar-logo"><div class="sidebar-logo-icon"><i class="bi bi-shield-check" style="color:white"></i></div><div><div class="sidebar-logo-text">SIKAP</div><div class="sidebar-logo-sub">Portal Orang Tua</div></div></div></div>
+  <div class="sidebar-nav">
+    <button class="nav-item" onclick="goTo('p-ortu')"><i class="bi bi-house"></i>Beranda</button>
+    <button class="nav-item" onclick="goTo('p-ortu-pel')"><i class="bi bi-exclamation-triangle"></i>Pelanggaran</button>
+    <button class="nav-item" onclick=""><i class="bi bi-journal-text"></i>Catatan Positif</button>
+    <button class="nav-item active" onclick="goTo('p-notif')"><i class="bi bi-bell"></i>Notifikasi</button>
+  </div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar" style="background:#7c3aed">BF</div><div><div class="su-name">Bapak Fauzan</div><div class="su-role">Orang Tua / Wali</div></div></div></div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left"><div class="ta-badge"><i class="bi bi-calendar3" style="font-size:12px"></i>2024/2025 — Semester Genap</div></div>
+    <div class="topbar-right"><button class="btn-logout" onclick="goTo('p-login')"><i class="bi bi-box-arrow-right"></i>Logout</button></div>
+  </div>
+  <div class="content">
+    <div class="page-header"><div><div class="page-title">Notifikasi</div><div class="page-sub">50 notifikasi terbaru</div></div></div>
+    <div class="card">
+      <div class="notif-item unread">
+        <div class="notif-icon" style="background:#fee2e2"><i class="bi bi-exclamation-triangle" style="color:#dc2626"></i></div>
+        <div style="flex:1">
+          <div class="text-semibold text-sm mb-1">Pelanggaran Baru — Muhammad Rafi</div>
+          <div class="text-muted text-sm">Bolos Sekolah (25 poin) dicatat pada 16/03/2026</div>
+          <div class="text-muted text-xs mt-1"><i class="bi bi-clock" style="margin-right:4px"></i>16/03/2026 08.30</div>
+        </div>
+        <span class="badge b-blue">Baru</span>
+      </div>
+      <div class="notif-item unread">
+        <div class="notif-icon" style="background:#fee2e2"><i class="bi bi-exclamation-triangle" style="color:#dc2626"></i></div>
+        <div style="flex:1">
+          <div class="text-semibold text-sm mb-1">Pelanggaran Baru — Muhammad Rafi</div>
+          <div class="text-muted text-sm">Membawa HP/gadget (15 poin) dicatat pada 08/03/2026</div>
+          <div class="text-muted text-xs mt-1"><i class="bi bi-clock" style="margin-right:4px"></i>08/03/2026 09.15</div>
+        </div>
+        <span class="badge b-blue">Baru</span>
+      </div>
+      <div class="notif-item unread">
+        <div class="notif-icon" style="background:#d1fae5"><i class="bi bi-stars" style="color:#059669"></i></div>
+        <div style="flex:1">
+          <div class="text-semibold text-sm mb-1">Catatan Positif — Ahmad Fauzi, S.Pd.</div>
+          <div class="text-muted text-sm">Rafi aktif bertanya dan berhasil menjawab soal MTK dengan benar</div>
+          <div class="text-muted text-xs mt-1"><i class="bi bi-clock" style="margin-right:4px"></i>12/03/2026 10.00</div>
+        </div>
+        <span class="badge b-blue">Baru</span>
+      </div>
+      <div class="notif-item">
+        <div class="notif-icon" style="background:#fee2e2"><i class="bi bi-exclamation-triangle" style="color:#dc2626"></i></div>
+        <div style="flex:1">
+          <div class="text-semibold text-sm mb-1">Pelanggaran Baru — Muhammad Rafi</div>
+          <div class="text-muted text-sm">Terlambat masuk sekolah (5 poin) dicatat pada 02/03/2026</div>
+          <div class="text-muted text-xs mt-1"><i class="bi bi-clock" style="margin-right:4px"></i>02/03/2026 07.20</div>
+        </div>
+      </div>
+      <div class="notif-item">
+        <div class="notif-icon" style="background:#dbeafe"><i class="bi bi-info-circle" style="color:#2563eb"></i></div>
+        <div style="flex:1">
+          <div class="text-semibold text-sm mb-1">Informasi Semester Baru</div>
+          <div class="text-muted text-sm">Semester Genap 2024/2025 telah dimulai. Pantau pelanggaran putra/putri Anda di sini.</div>
+          <div class="text-muted text-xs mt-1"><i class="bi bi-clock" style="margin-right:4px"></i>15/01/2026 08.00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: BACKUP DATABASE -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="p-backup" class="page">
+<div class="app-layout">
+<div class="sidebar">
+  <div class="sidebar-brand"><div class="sidebar-logo"><div class="sidebar-logo-icon"><i class="bi bi-shield-check" style="color:white"></i></div><div><div class="sidebar-logo-text">SIKAP</div><div class="sidebar-logo-sub">Panel Admin</div></div></div></div>
+  <div class="sidebar-nav">
+    <button class="nav-item" onclick="goTo('p-admin')"><i class="bi bi-speedometer2"></i>Dashboard</button>
+    <button class="nav-item" onclick=""><i class="bi bi-people"></i>Siswa</button>
+    <button class="nav-item" onclick=""><i class="bi bi-person-badge"></i>Guru & User</button>
+    <button class="nav-item" onclick=""><i class="bi bi-people-fill"></i>Akun Orang Tua</button>
+    <button class="nav-item active" onclick="goTo('p-backup')"><i class="bi bi-database-down"></i>Backup Database</button>
+  </div>
+  <div class="sidebar-footer"><div class="sidebar-user"><div class="sidebar-avatar">AD</div><div><div class="su-name">Administrator</div><div class="su-role">Admin Sistem</div></div></div></div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left"><div class="ta-badge"><i class="bi bi-calendar3" style="font-size:12px"></i>2024/2025 — Semester Genap</div></div>
+    <div class="topbar-right"><button class="btn-logout" onclick="goTo('p-login')"><i class="bi bi-box-arrow-right"></i>Logout</button></div>
+  </div>
+  <div class="content">
+    <div class="page-header"><div><div class="page-title">Backup Database</div><div class="page-sub">Backup data aplikasi SIKAP secara manual</div></div></div>
+    <div class="g2 mb-4" style="align-items:start">
+      <!-- Panel backup -->
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div class="card">
+          <div class="card-header" style="padding-bottom:0.75rem"><div class="card-title"><i class="bi bi-database-down" style="color:#2563eb"></i>Buat Backup Baru</div></div>
+          <div class="card-body">
+            <p class="text-muted text-sm mb-4">Backup menyimpan seluruh data ke file SQL dan sekaligus mendownload ke komputer Anda.</p>
+            <!-- Info DB -->
+            <div style="background:#f8fafc;border-radius:10px;padding:1rem;margin-bottom:1.25rem">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">
+                <div><div style="font-weight:700;color:#2563eb">sikap_db</div><div class="text-xs text-muted">Database</div></div>
+                <div><div style="font-weight:700">16</div><div class="text-xs text-muted">Tabel</div></div>
+                <div><div style="font-weight:700">3</div><div class="text-xs text-muted">File Backup</div></div>
+              </div>
+            </div>
+            <div style="display:grid;gap:8px">
+              <button class="btn btn-primary w-full" onclick="simulasiBackup(this)"><i class="bi bi-download"></i>Backup & Download Sekarang</button>
+              <button class="btn btn-outline w-full" onclick="showToast('Backup disimpan di server!','success')"><i class="bi bi-server"></i>Simpan di Server Saja</button>
+            </div>
+            <div class="alert alert-warning mt-3" style="margin-bottom:0"><i class="bi bi-exclamation-triangle"></i>Jangan tutup halaman saat proses berlangsung.</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div><div class="text-muted text-sm">Total penyimpanan backup</div><div style="font-size:1.25rem;font-weight:700">2.4 MB</div></div>
+              <i class="bi bi-hdd" style="font-size:2rem;color:#94a3b8;opacity:0.3"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Riwayat backup -->
+      <div class="card">
+        <div class="card-header" style="padding-bottom:0.75rem">
+          <div class="card-title"><i class="bi bi-clock-history" style="color:#94a3b8"></i>Riwayat Backup<span class="badge b-gray" style="margin-left:8px">3</span></div>
+        </div>
+        <div>
+          <div style="padding:1rem 1.25rem;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:12px">
+            <i class="bi bi-file-earmark-code" style="font-size:1.75rem;color:#059669"></i>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="text-semibold text-sm">backup_sikap_20260316_081500.sql</span><span class="badge b-green">Terbaru</span></div>
+              <div style="display:flex;gap:12px"><span class="text-xs text-muted"><i class="bi bi-clock" style="margin-right:4px"></i>16/03/2026 08.15</span><span class="text-xs text-muted"><i class="bi bi-hdd" style="margin-right:4px"></i>892 KB</span></div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-outline btn-sm" onclick="showToast('Downloading backup file...','info')"><i class="bi bi-download"></i></button>
+              <button class="btn btn-danger btn-sm" onclick="showToast('File backup dihapus','success')"><i class="bi bi-trash"></i></button>
+            </div>
+          </div>
+          <div style="padding:1rem 1.25rem;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:12px">
+            <i class="bi bi-file-earmark-code" style="font-size:1.75rem;color:#94a3b8;opacity:0.5"></i>
+            <div style="flex:1">
+              <div class="text-semibold text-sm mb-1">backup_sikap_20260309_100022.sql</div>
+              <div style="display:flex;gap:12px"><span class="text-xs text-muted"><i class="bi bi-clock" style="margin-right:4px"></i>09/03/2026 10.00</span><span class="text-xs text-muted"><i class="bi bi-hdd" style="margin-right:4px"></i>856 KB</span></div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-outline btn-sm" onclick="showToast('Downloading...','info')"><i class="bi bi-download"></i></button>
+              <button class="btn btn-danger btn-sm" onclick="showToast('File dihapus','success')"><i class="bi bi-trash"></i></button>
+            </div>
+          </div>
+          <div style="padding:1rem 1.25rem;display:flex;align-items:center;gap:12px">
+            <i class="bi bi-file-earmark-code" style="font-size:1.75rem;color:#94a3b8;opacity:0.5"></i>
+            <div style="flex:1">
+              <div class="text-semibold text-sm mb-1">backup_sikap_20260301_073511.sql</div>
+              <div style="display:flex;gap:12px"><span class="text-xs text-muted"><i class="bi bi-clock" style="margin-right:4px"></i>01/03/2026 07.35</span><span class="text-xs text-muted"><i class="bi bi-hdd" style="margin-right:4px"></i>801 KB</span></div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-outline btn-sm" onclick="showToast('Downloading...','info')"><i class="bi bi-download"></i></button>
+              <button class="btn btn-danger btn-sm" onclick="showToast('File dihapus','success')"><i class="bi bi-trash"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- DEMO NAV (floating) -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="demo-nav" id="demoNav">
+  <span class="dn-label">Demo</span>
+  <button onclick="goTo('p-login')" id="dn-login">Login</button>
+  <span class="sep">|</span>
+  <button onclick="goTo('p-admin')" id="dn-admin">Admin</button>
+  <button onclick="goTo('p-backup')" id="dn-backup">Backup</button>
+  <span class="sep">|</span>
+  <button onclick="goTo('p-guru')" id="dn-guru">Guru</button>
+  <button onclick="goTo('p-catat')" id="dn-catat">Catat</button>
+  <button onclick="goTo('p-riwayat')" id="dn-riwayat">Riwayat</button>
+  <button onclick="goTo('p-jurnal')" id="dn-jurnal">Jurnal</button>
+  <button onclick="goTo('p-jadwal')" id="dn-jadwal">Jadwal</button>
+  <span class="sep">|</span>
+  <button onclick="goTo('p-bk')" id="dn-bk">BK</button>
+  <button onclick="goTo('p-monitor')" id="dn-monitor">Monitor</button>
+  <button onclick="goTo('p-rekap')" id="dn-rekap">Rekap</button>
+  <span class="sep">|</span>
+  <button onclick="goTo('p-ortu')" id="dn-ortu">Ortu</button>
+  <button onclick="goTo('p-ortu-pel')" id="dn-ortu-pel">Pelanggaran</button>
+  <button onclick="goTo('p-notif')" id="dn-notif">Notif</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<script>
+// ── Page navigation ───────────────────────────────────────────────
+let bkChartInst = null;
+
+function goTo(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const page = document.getElementById(pageId);
+    if (page) {
+        page.classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    // Update demo nav
+    document.querySelectorAll('.demo-nav button').forEach(b => {
+        b.classList.remove('cur');
+        const id = b.id.replace('dn-','p-');
+        if (id === pageId) b.classList.add('cur');
+    });
+
+    // Init BK chart
+    if (pageId === 'p-bk') setTimeout(initBKChart, 100);
+
+    // Reset catat steps
+    if (pageId === 'p-catat') {
+        catGoStep(1);
+        catSelKelas = ''; catSelSiswa = '';
+    }
+
+    // Reset jurnal steps
+    if (pageId === 'p-jurnal') jurGoStep(1);
+
+    // Mobile sidebar: close then re-init for new page
+    if (typeof closeSidebar === 'function') closeSidebar();
+    if (typeof initMobileSidebar === 'function') setTimeout(initMobileSidebar, 50);
+}
+
+// ── Toast ─────────────────────────────────────────────────────────
+function showToast(msg, type='success') {
+    const colors = {success:'#059669',danger:'#dc2626',warning:'#d97706',info:'#2563eb'};
+    const icons  = {success:'✓',danger:'✕',warning:'⚠',info:'ℹ'};
+    const t = document.createElement('div');
+    t.style.cssText = `position:fixed;top:1.5rem;right:1.5rem;z-index:99999;background:${colors[type]||colors.success};color:white;padding:12px 20px;border-radius:10px;font-size:0.875rem;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.15);display:flex;align-items:center;gap:8px;max-width:320px;`;
+    t.innerHTML = `<span>${icons[type]||'✓'}</span>${msg}`;
+    document.body.appendChild(t);
+    setTimeout(() => { t.style.transition='opacity 0.3s'; t.style.opacity='0'; setTimeout(()=>t.remove(),300); }, 3000);
+}
+
+// ── BK Chart ─────────────────────────────────────────────────────
+function initBKChart() {
+    const canvas = document.getElementById('bk-chart');
+    if (!canvas) return;
+    if (bkChartInst) bkChartInst.destroy();
+    bkChartInst = new Chart(canvas.getContext('2d'), {
+        type:'bar',
+        data:{
+            labels:['10/03','11/03','12/03','13/03','14/03','15/03','16/03'],
+            datasets:[{label:'Pelanggaran',data:[12,8,15,10,18,9,7],
+                backgroundColor:'rgba(37,99,235,0.15)',
+                borderColor:'rgba(37,99,235,0.8)',
+                borderWidth:2,borderRadius:6}]
+        },
+        options:{responsive:true,plugins:{legend:{display:false}},
+            scales:{y:{beginAtZero:true,ticks:{stepSize:5},grid:{color:'rgba(0,0,0,0.04)'}},
+                    x:{grid:{display:false}}}}
+    });
+}
+
+// ── CATAT PELANGGARAN ─────────────────────────────────────────────
+let catSelKelas = '', catSelSiswa = '';
+
+const catSiswaData = {
+    'VII-A': [{id:1,nama:'Ahmad Fauzan',nis:'25001'},{id:2,nama:'Siti Aminah',nis:'25002'},{id:3,nama:'Budi Hartono',nis:'25003'},{id:4,nama:'Dewi Lestari',nis:'25004'},{id:5,nama:'Eko Prasetyo',nis:'25005'}],
+    'VII-B': [{id:6,nama:'Fajar Nugroho',nis:'25006'},{id:7,nama:'Siti Nurhaliza',nis:'25007'},{id:8,nama:'Hendra Kurnia',nis:'25008'},{id:9,nama:'Indah Sari',nis:'25009'}],
+    'VIII-A': [{id:10,nama:'Kartika Sari',nis:'25011'},{id:11,nama:'Luki Pratama',nis:'25012'},{id:12,nama:'Budi Santoso',nis:'25015'}],
+    'VIII-B': [{id:13,nama:'Rizki Ramadhan',nis:'25016'},{id:14,nama:'Putri Handayani',nis:'25017'},{id:15,nama:'Reza Maulana',nis:'25019'}],
+    'IX-A':  [{id:16,nama:'Muhammad Rafi',nis:'25021'},{id:17,nama:'Tiara Anisa',nis:'25022'},{id:18,nama:'Wahyu Hidayat',nis:'25025'}],
+    'IX-B':  [{id:19,nama:'Dewi Rahayu',nis:'25026'},{id:20,nama:'Yusuf Pribadi',nis:'25027'},{id:21,nama:'Zahra Cantika',nis:'25028'}],
+};
+
+let catAllSiswa = [];
+
+function catGoStep(n) {
+    [1,2,3,4].forEach(i => {
+        const el = document.getElementById('cs-step'+i);
+        if (el) el.style.display = i===n ? 'block' : 'none';
+    });
+    // Update step circles
+    [1,2,3].forEach(i => {
+        const c = document.getElementById('cs'+i);
+        const l = document.getElementById('cl'+i);
+        const ln = document.getElementById('cln'+i);
+        if (!c) return;
+        c.className = 'step-circle';
+        l.className = 'step-label';
+        if (ln) ln.className = 'step-line';
+        if (i < n) { c.className+=' done'; c.innerHTML='<i class="bi bi-check" style="font-size:14px"></i>'; l.className+=' done'; if(ln) ln.className+=' done'; }
+        else if (i===n) { c.className+=' active'; c.innerHTML=i; l.className+=' active'; }
+        else { c.innerHTML=i; }
+    });
+    window.scrollTo(0,0);
+}
+
+function catPilihKelas(kelas) {
+    catSelKelas = kelas;
+    document.getElementById('cat-kelas-label').textContent = kelas;
+    catAllSiswa = catSiswaData[kelas] || [];
+    catRenderSiswa(catAllSiswa);
+    catGoStep(2);
+}
+
+function catRenderSiswa(list) {
+    const container = document.getElementById('cat-siswa-list');
+    container.innerHTML = list.map(s => `
+        <div class="list-group-item" onclick="catPilihSiswa('${s.nama}')">
+            <div><div class="text-semibold">${s.nama}</div><div class="text-xs text-muted">NIS: ${s.nis}</div></div>
+            <i class="bi bi-chevron-right text-muted"></i>
+        </div>`).join('');
+}
+
+function catFilterSiswa(keyword) {
+    catRenderSiswa(catAllSiswa.filter(s =>
+        s.nama.toLowerCase().includes(keyword.toLowerCase()) || s.nis.includes(keyword)
+    ));
+}
+
+function catPilihSiswa(nama) {
+    catSelSiswa = nama;
+    document.getElementById('cat-siswa-label').textContent = nama;
+    catGoStep(3);
+}
+
+function catFilterJenis(keyword) {
+    const q = keyword.toLowerCase();
+    document.querySelectorAll('#cs-step3 .jenis-item').forEach(el => {
+        const teks = el.querySelector('.fw-500')?.textContent.toLowerCase() ?? '';
+        el.style.display = teks.includes(q) ? '' : 'none';
+    });
+}
+
+function catPilihJenis(nama, kode, poin) {
+    document.getElementById('konf-kelas').textContent = catSelKelas;
+    document.getElementById('konf-siswa').textContent = catSelSiswa;
+    document.getElementById('konf-jenis').textContent = nama + ' (' + kode + ')';
+    document.getElementById('konf-poin').textContent  = poin + ' poin';
+    catGoStep(4);
+}
+
+function catSimpan() {
+    document.getElementById('cat-success-msg').textContent =
+        catSelSiswa + ' — ' + document.getElementById('konf-jenis').textContent + ' berhasil dicatat.';
+    document.getElementById('catat-success').classList.add('show');
+}
+
+function catLagi() {
+    document.getElementById('catat-success').classList.remove('show');
+    catSelKelas=''; catSelSiswa='';
+    catGoStep(1);
+}
+
+// ── JURNAL ────────────────────────────────────────────────────────
+let jurSelSiswa = '';
+
+function jurGoStep(n) {
+    [1,2,3].forEach(i => {
+        const el = document.getElementById('js-step'+i);
+        if (el) el.style.display = i===n ? 'block' : 'none';
+    });
+    [1,2,3].forEach(i => {
+        const c = document.getElementById('js'+i);
+        const l = document.getElementById('jl'+i);
+        const ln = document.getElementById('jln'+i);
+        if (!c) return;
+        c.className = 'step-circle';
+        l.className = 'step-label';
+        if (ln) ln.className = 'step-line';
+        if (i<n){c.className+=' done';c.innerHTML='<i class="bi bi-check" style="font-size:14px"></i>';l.className+=' done';if(ln)ln.className+=' done';}
+        else if(i===n){c.className+=' active';c.innerHTML=i;l.className+=' active';}
+        else{c.innerHTML=i;}
+    });
+}
+
+function jurPilihKelas(kelas) {
+    const siswaList = catSiswaData[kelas] || [];
+    document.getElementById('jur-siswa-wrap').style.display = 'block';
+    document.getElementById('jur-siswa-list').innerHTML = siswaList.map(s =>
+        `<div class="list-group-item" onclick="jurPilihSiswa('${s.nama}')">
+            <div><div class="text-semibold">${s.nama}</div><div class="text-xs text-muted">NIS: ${s.nis}</div></div>
+            <i class="bi bi-chevron-right text-muted"></i>
+        </div>`).join('');
+}
+
+function jurPilihSiswa(nama) {
+    jurSelSiswa = nama;
+    document.getElementById('jur-siswa-label').textContent = nama;
+    jurGoStep(2);
+}
+
+function jurPilihJenis(jenis, label) {
+    document.getElementById('jur-siswa-label2').textContent = jurSelSiswa;
+    const el = document.getElementById('jur-jenis-label');
+    el.textContent = label;
+    el.className = 'badge ' + (jenis==='observasi'?'b-blue':jenis==='interaksi_bermakna'?'b-green':'b-amber');
+    jurGoStep(3);
+}
+
+// ── REKAP ─────────────────────────────────────────────────────────
+const rekapData = [
+    {nama:'Dewi Rahayu',nis:'25026',kelas:'IX-B',r:1,s:2,b:3,kasus:6,poin:85,sanksi:'Skorsing',warna:'red'},
+    {nama:'Muhammad Rafi',nis:'25021',kelas:'IX-A',r:2,s:1,b:1,kasus:4,poin:65,sanksi:'SP 2',warna:'red'},
+    {nama:'Rizki Ramadhan',nis:'25016',kelas:'VIII-B',r:1,s:2,b:0,kasus:3,poin:45,sanksi:'SP 1',warna:'amber'},
+    {nama:'Siti Nurhaliza',nis:'25007',kelas:'VII-B',r:2,s:1,b:0,kasus:3,poin:35,sanksi:'SP 1',warna:'amber'},
+    {nama:'Budi Santoso',nis:'25015',kelas:'VIII-A',r:4,s:0,b:0,kasus:4,poin:20,sanksi:'Peringatan Lisan',warna:'green'},
+    {nama:'Ahmad Fauzan',nis:'25001',kelas:'VII-A',r:2,s:0,b:0,kasus:2,poin:15,sanksi:'Peringatan Lisan',warna:'green'},
+    {nama:'Fajar Nugroho',nis:'25006',kelas:'VII-B',r:1,s:1,b:0,kasus:2,poin:20,sanksi:'Peringatan Lisan',warna:'green'},
+];
+
+function renderRekap(data) {
+    const bgColors = {red:'#fee2e2',amber:'#fef3c7',green:''};
+    const badgeMap = {red:'b-red',amber:'b-amber',green:'b-green'};
+    document.getElementById('rekap-tbody').innerHTML = data.map((s,i) => `
+        <tr style="background:${bgColors[s.warna]||''}">
+            <td>${i+1}</td>
+            <td><div class="text-semibold">${s.nama}</div><div class="text-xs text-muted">${s.nis}</div></td>
+            <td><span class="badge b-blue">${s.kelas}</span></td>
+            <td><span class="badge b-green">${s.r}</span></td>
+            <td><span class="badge b-amber">${s.s}</span></td>
+            <td><span class="badge b-red">${s.b}</span></td>
+            <td>${s.kasus}</td>
+            <td><strong style="color:${s.warna==='red'?'#dc2626':s.warna==='amber'?'#d97706':'#1e293b'}">${s.poin}</strong></td>
+            <td><span class="badge ${badgeMap[s.warna]}">${s.sanksi}</span></td>
+            <td><button class="btn btn-outline btn-sm" onclick="lihatDetail('${s.nama}','${s.nis}','${s.kelas}',${s.poin},${s.kasus},'${s.sanksi}','${s.warna}')"><i class="bi bi-eye"></i></button></td>
+        </tr>`).join('');
+}
+
+function filterRekapKelas(btn, kelas) {
+    document.querySelectorAll('[onclick^="filterRekapKelas"]').forEach(b => { b.className='btn btn-outline btn-sm'; });
+    btn.className = 'btn btn-primary btn-sm';
+    renderRekap(kelas==='semua' ? rekapData : rekapData.filter(s=>s.kelas===kelas));
+}
+
+function lihatDetail(nama, nis, kelas, poin, kasus, sanksi, warna) {
+    const inisial = nama.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+    document.getElementById('d-avatar').textContent = inisial;
+    document.getElementById('d-nama').textContent   = nama;
+    document.getElementById('d-meta').textContent   = 'NIS: '+nis+' · '+kelas;
+    document.getElementById('d-poin').textContent   = poin;
+    document.getElementById('d-kasus').textContent  = kasus;
+    const sanksiEl = document.getElementById('d-sanksi');
+    sanksiEl.textContent = sanksi;
+    sanksiEl.className = 'badge ' + (warna==='red'?'b-red':warna==='amber'?'b-amber':'b-green');
+    document.getElementById('d-sanksi-nama').textContent = sanksi;
+    const card = document.getElementById('d-sanksi-card');
+    if (warna==='red') { card.style.background='#fee2e2'; card.style.borderColor='#dc2626'; }
+    else if (warna==='amber') { card.style.background='#fef3c7'; card.style.borderColor='#d97706'; }
+    else { card.style.background='#d1fae5'; card.style.borderColor='#059669'; }
+    document.getElementById('detail-overlay').classList.add('show');
+}
+
+function closeDetail() {
+    document.getElementById('detail-overlay').classList.remove('show');
+}
+
+// ── JADWAL ────────────────────────────────────────────────────────
+function jadwalTambahBaris() {
+    const tbody = document.getElementById('jadwal-tbody');
+    const rowCount = tbody.querySelectorAll('tr').length + 1;
+    const tr = document.createElement('tr');
+    tr.className = 'jadwal-row';
+    tr.style.borderBottom = '1px solid #f1f5f9';
+    tr.innerHTML = `
+        <td style="padding:0"><input type="text" class="jadwal-input" value="${rowCount}" style="text-align:center;font-weight:700"></td>
+        <td style="padding:0"><input type="text" class="jadwal-input" placeholder="07.00-07.45"></td>
+        ${'<td style="padding:0"><input type="text" class="jadwal-input" placeholder=""></td>'.repeat(7)}
+        <td style="text-align:center;padding:4px"><button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove();updateJadwalCount();showToast('Baris dihapus','success')"><i class="bi bi-trash" style="font-size:12px"></i></button></td>`;
+    tbody.appendChild(tr);
+    updateJadwalCount();
+    tr.querySelector('input').focus();
+}
+
+function updateJadwalCount() {
+    const n = document.getElementById('jadwal-tbody').querySelectorAll('tr').length;
+    const el = document.getElementById('jadwal-count');
+    if (el) el.textContent = n + ' baris';
+}
+
+// ── BACKUP SIMULASI ───────────────────────────────────────────────
+function simulasiBackup(btn) {
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px"><span style="width:16px;height:16px;border:2px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;display:inline-block"></span>Memproses...</span>';
+    const style = document.createElement('style');
+    style.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+    document.head.appendChild(style);
+    setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+        showToast('Backup berhasil dibuat & didownload!', 'success');
+    }, 2500);
+}
+
+// ── MOBILE SIDEBAR ────────────────────────────────────────────────
+function initMobileSidebar() {
+    // Create ONE shared overlay
+    let overlay = document.getElementById('global-sidebar-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'global-sidebar-overlay';
+        overlay.className = 'sidebar-overlay';
+        overlay.addEventListener('click', closeSidebar);
+        document.body.appendChild(overlay);
+    }
+
+    // Add close button inside every sidebar that doesn't have one yet
+    document.querySelectorAll('.sidebar').forEach(sb => {
+        if (!sb.querySelector('.btn-sidebar-close')) {
+            const btn = document.createElement('button');
+            btn.className = 'btn-sidebar-close';
+            btn.innerHTML = '<i class="bi bi-x-lg"></i>';
+            btn.addEventListener('click', closeSidebar);
+            sb.querySelector('.sidebar-brand').appendChild(btn);
+        }
+    });
+
+    // Add hamburger to every topbar that doesn't have one yet
+    document.querySelectorAll('.topbar').forEach(tb => {
+        if (!tb.querySelector('.btn-hamburger')) {
+            const hbg = document.createElement('button');
+            hbg.className = 'btn-hamburger';
+            hbg.innerHTML = '<i class="bi bi-list"></i>';
+            hbg.setAttribute('aria-label', 'Buka menu');
+            hbg.addEventListener('click', openSidebar);
+            const left = tb.querySelector('.topbar-left');
+            if (left) left.prepend(hbg);
+            else tb.prepend(hbg);
+        }
+    });
+}
+
+function openSidebar() {
+    // Find sidebar in the currently active page
+    const activePage = document.querySelector('.page.active');
+    if (!activePage) return;
+    const sb = activePage.querySelector('.sidebar');
+    if (!sb) return;
+    sb.classList.add('open');
+    document.getElementById('global-sidebar-overlay').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSidebar() {
+    document.querySelectorAll('.sidebar.open').forEach(sb => sb.classList.remove('open'));
+    const overlay = document.getElementById('global-sidebar-overlay');
+    if (overlay) overlay.classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+// Close sidebar automatically when a nav item is clicked (mobile)
+document.addEventListener('click', e => {
+    const navItem = e.target.closest('.nav-item');
+    if (navItem && window.innerWidth <= 768) {
+        closeSidebar();
+    }
+});
+
+// ── INIT ──────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    renderRekap(rekapData);
+    catGoStep(1);
+    jurGoStep(1);
+    // Set demo nav current
+    document.getElementById('dn-login').classList.add('cur');
+    // Init mobile sidebar controls
+    initMobileSidebar();
+});
+
+
+</script>
+</body>
+</html>
